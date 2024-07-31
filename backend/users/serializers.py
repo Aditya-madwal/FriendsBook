@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
+from django.contrib.auth.hashers import make_password
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # We are writing this becoz we need confirm password field in our Registratin Request
@@ -22,8 +23,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
         return attrs
 
-    def create(self, validate_data):
-        return CustomUser.objects.create_user(**validate_data)
+
+    def create(self, validated_data):
+        validated_data.pop('password2', None)
+        # validated_data['password'] = make_password(password)
+        instance = self.Meta.model.objects.create_user(**validated_data)
+        # instance.is_active = True
+        # instance.save()
+        return instance
+        return CustomUser.objects.create_user(**validated_data)
+
   
 class UserLoginSerializer(serializers.ModelSerializer) :
     class Meta:

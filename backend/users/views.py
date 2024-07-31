@@ -14,7 +14,12 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
+# CORS error :
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework import status
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(APIView) :
     def post(self, request) :
         serializer = UserRegistrationSerializer(data = request.data)
@@ -22,8 +27,8 @@ class RegistrationView(APIView) :
         if not serializer.is_valid() :
             return Response({'errors':serializer.errors})
         
-        password = make_password(serializer.validated_data['password'])
-        serializer.validated_data['password'] = password
+        # password = make_password(serializer.validated_data['password'])
+        # serializer.validated_data['password'] = password
 
         serializer.save()
 
@@ -31,8 +36,9 @@ class RegistrationView(APIView) :
 
         refresh = RefreshToken.for_user(user)
 
-        return Response({'status':200,'payload':serializer.data,'message':"your data has been saved",'token':str(refresh),'access_token':str(refresh.access_token)})
+        return Response({'status':200,'payload':serializer.data,'message':"your data has been saved",'refresh_token':str(refresh),'access_token':str(refresh.access_token)})
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView) :
     def post(self, request, format=None) :
         serializer = UserLoginSerializer(data = request.data)
@@ -44,7 +50,6 @@ class LoginView(APIView) :
 
         return Response({'status':200,'payload':serializer.data,'message':"You successfully logged in",'token':str(refresh),'access_token':str(refresh.access_token)})
     
-
 
 class SampleEndpoint(APIView) :
     authentication_classes = [JWTAuthentication]
