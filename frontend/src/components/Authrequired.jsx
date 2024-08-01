@@ -21,7 +21,7 @@ const AuthRequiringRoutes = ({ children }) => {
         refresh: reftoken,
       });
       if (res.status === 200) {
-        localStorage.setItem(ACCESS_TOKEN, res.data.access);
+        localStorage.setItem(ACCESS_TOKEN, String(res.data.access));
         SetIsAuth(true);
       } else {
         SetIsAuth(false);

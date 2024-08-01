@@ -14,6 +14,23 @@ const Form = (props) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleImageChange = (e) => {
+    setPfp(e.target.files[0]);
+  };
+
+  const refreshToken = async () => {
+    const reftoken = localStorage.getItem(REFRESH_TOKEN);
+    try {
+      const res = await api.post("users/userapi/token/refresh/", {
+        refresh: reftoken,
+      });
+      if (res.status === 200) {
+        localStorage.setItem(ACCESS_TOKEN, String(res.data.access));
+      } else {
+      }
+    } catch {}
+  };
+
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -21,10 +38,34 @@ const Form = (props) => {
     try {
       if (props.method === "login") {
         const res = await api.post(props.route, { username, password });
-        localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+        // localStorage.setItem(ACCESS_TOKEN, String(res.data.access));
+        // console.log(res.data);
+        localStorage.setItem(REFRESH_TOKEN, String(res.data.refresh));
+        await refreshToken();
         navigate("/");
       } else {
+        // register post :
+
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("first_name", first_name);
+        formData.append("last_name", last_name);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("password2", password2);
+        formData.append("pfp", pfp);
+
+        try {
+          const response = await api.post(props.route, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } catch (error) {
+          console.error("Error:", error);
+          // Handle network or other errors
+        }
+
         const res = await api.post(props.route, {
           username,
           password,
@@ -131,6 +172,7 @@ const Form = (props) => {
                 setPassword2(e.target.value);
               }}
             />
+            <input type="file" id="image" onChange={handleImageChange} />
           </div>
         </>
       )}

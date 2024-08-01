@@ -19,7 +19,7 @@ class showdetails(APIView) :
 
     def get(self, request) :
         fn = request.user.username
-        notes = Notes.objects.filter(user = request.user)
+        notes = Notes.objects.all()
         serializer = NoteSerializer(notes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import CustomUser
 
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer
 
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -38,25 +38,18 @@ class RegistrationView(APIView) :
 
         return Response({'status':200,'payload':serializer.data,'message':"your data has been saved",'refresh_token':str(refresh),'access_token':str(refresh.access_token)})
 
-@method_decorator(csrf_exempt, name='dispatch')
-class LoginView(APIView) :
-    def post(self, request, format=None) :
-        serializer = UserLoginSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True) :
-            username = serializer.data.get('email')
-            password = serializer.data.get('password')
-            user = authenticate(username=username, password=password)
-            refresh = RefreshToken.for_user(user)
-
-        return Response({'status':200,'payload':serializer.data,'message':"You successfully logged in",'token':str(refresh),'access_token':str(refresh.access_token)})
-    
-
 class SampleEndpoint(APIView) :
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request) :
+        user = self.request.user
+        pfp = None
+        if user.pfp :
+            pfp = user.pfp
         data = {
-            "message" : "you can see the api data bcz this you are registered"
+            "name" : f"{user.first_name} {user.last_name}",
+            "pfp" : f"{pfp}",
+            "email" : user.email
         }
         return Response(data)

@@ -6,7 +6,7 @@ from .manager import CustomUserManager
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    pfp = models.ImageField(upload_to="images/pfps", max_length=None, default="", blank=True, null=True)
+    pfp = models.ImageField(upload_to="pfps", max_length=None, default="", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     verified = models.BooleanField(default=False , blank=True, null=True)
 
@@ -16,4 +16,4 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
+        return self.username

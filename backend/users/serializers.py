@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth.hashers import make_password
 
+from django.contrib.auth import authenticate
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # We are writing this becoz we need confirm password field in our Registratin Request
     password2 = serializers.CharField(style={'input_type':'password'}, write_only=True)
@@ -34,7 +36,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return CustomUser.objects.create_user(**validated_data)
 
   
-class UserLoginSerializer(serializers.ModelSerializer) :
-    class Meta:
-        model = CustomUser
-        fields = ['username','password']
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=200)
+    password = serializers.CharField(max_length=128, write_only=True)
+
+    def validate(self, attrs):
+        # username = attrs.get('username')
+        # password = attrs.get('password')
+        # user = authenticate(username=username, password=password)
+        # if not user:
+        #     raise serializers.ValidationError("Incorrect credentials")
+        return attrs
