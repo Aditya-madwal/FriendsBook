@@ -23,7 +23,7 @@ from rest_framework import status
 class RegistrationView(APIView) :
     def post(self, request) :
         serializer = UserRegistrationSerializer(data = request.data)
-        
+
         if not serializer.is_valid() :
             return Response({'errors':serializer.errors})
         

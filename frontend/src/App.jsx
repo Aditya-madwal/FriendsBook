@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -14,8 +15,23 @@ const Logout = () => {
 };
 
 const RegisterAndLogout = () => {
-  localStorage.clear();
-  return <Register />;
+  if (localStorage.getItem(ACCESS_TOKEN) == null) {
+    localStorage.clear();
+    return <Register />;
+  } else {
+    return (
+      <>
+        already logged in
+        <button
+          className="btn"
+          onClick={() => {
+            Logout();
+          }}>
+          <Link to="/login">Logout</Link>
+        </button>
+      </>
+    );
+  }
 };
 
 function App() {
