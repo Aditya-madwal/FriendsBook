@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -6,10 +6,15 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Page404 from "./pages/Page404";
+import Userdash from "./pages/Userdash";
 import AuthRequiringRoutes from "./components/Authrequired";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
+import { useContext } from "react";
+import { MyContext } from "./MyContext";
+import api from "./api";
+import FriendRequests from "./pages/FriendRequests";
 
-const Logout = () => {
+export const Logout = () => {
   localStorage.clear();
   return <Navigate to="/login" />;
 };
@@ -21,9 +26,9 @@ const RegisterAndLogout = () => {
   } else {
     return (
       <>
-        already logged in
+        already logged in :
         <button
-          className="btn"
+          className="btn underline"
           onClick={() => {
             Logout();
           }}>
@@ -35,7 +40,32 @@ const RegisterAndLogout = () => {
 };
 
 function App() {
-  const [count, setCount] = useState(0);
+  const { me, setMe } = useContext(MyContext);
+
+  useEffect(() => {
+    const fetchMyData = async () => {
+      try {
+        const response = await api.get(`/api/showme`);
+        setMe(response.data);
+        console.log("me ------------>" + response.data.email);
+      } catch (error) {
+        if (error.response) {
+          setError(
+            `Error: ${error.response.status} - ${error.response.statusText}`
+          );
+
+          console.log("---------->" + error.response);
+        } else if (error.request) {
+          setError("Error: No response received from server");
+          console.log("-------------->" + err);
+        } else {
+          setError(`Error: ${error.message}`);
+        }
+      } finally {
+      }
+    };
+    fetchMyData();
+  }, []);
 
   return (
     <BrowserRouter>
@@ -45,6 +75,22 @@ function App() {
           element={
             <AuthRequiringRoutes>
               <Home />
+            </AuthRequiringRoutes>
+          }
+        />
+        <Route
+          path="/user/:username"
+          element={
+            <AuthRequiringRoutes>
+              <Userdash />
+            </AuthRequiringRoutes>
+          }
+        />
+        <Route
+          path="/friendrequests"
+          element={
+            <AuthRequiringRoutes>
+              <FriendRequests />
             </AuthRequiringRoutes>
           }
         />

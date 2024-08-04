@@ -1,34 +1,30 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import { ACCESS_TOKEN } from "../constants";
+import Sidebar from "../components/Sidebar";
+import FriendRequests from "../components/FriendRequests";
+import AddPost from "../components/AddPost";
+import SearchBar from "../components/SearchBar";
+import PostCard from "../components/PostCard";
 
 const Home = () => {
   const [data, setData] = useState(null);
-  let response = "";
-
-  const fetchUserData = async () => {
-    try {
-      response = await api.get("/users/sample");
-      console.log(response.data); // Access the data here
-      setData(response.data.pfp);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // fetchUserData();
-
-  useEffect(() => {
-    fetchUserData();
-    console.log(`${import.meta.env.IMAGES_URL}/${data}`);
-  }, []);
-
-  console.log(JSON.stringify(response.data));
 
   return (
-    <>
-      <img src={`${import.meta.env.VITE_API_URL}/images/${data}`} alt="" />
-    </>
+    <div className="flex bg-[#F5F7F8]">
+      <Sidebar />
+      <div className="w-[50vw] h-fit flex flex-col items-center text-white p-4">
+        <div className="flex w-full justify-start ml-4 mb-4">
+          <span className="text-3xl text-black font-bold">Feeds</span>
+        </div>
+        <AddPost />
+        <PostCard />
+      </div>
+      <div className="right-side-bar-home h-screen">
+        <SearchBar />
+        <FriendRequests />
+      </div>
+    </div>
   );
 };
 

@@ -33,6 +33,8 @@ class RegistrationView(APIView) :
         serializer.save()
 
         user = CustomUser.objects.get(username = serializer.data['username'])
+        user.pfp = "/pfps/default.png"
+        user.save()
 
         refresh = RefreshToken.for_user(user)
 

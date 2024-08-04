@@ -35,3 +35,45 @@ input:active {
 input :focus {
   border: 1px solid blue;
 }
+
+.main-content {
+  margin-top: 20px;
+  width: 80%;
+  /* height: 150vh; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar {
+  width: 20%;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* border-right: 1px solid rgb(171, 171, 171); */
+}
+.right-side-bar-home {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  /* border-left: 1px solid rgb(171, 171, 171); */
+}
+
+.btn {
+  background-color: rgb(90, 88, 211);
+  padding: 0.5em;
+  padding-right: 1em;
+  padding-left: 1em;
+  border-radius: 10px;
+}
+
+.slowhover:hover {
+  transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+}

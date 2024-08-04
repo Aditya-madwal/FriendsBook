@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status
 from .logic import generate_uuid7
+from django.db.models import Q
 
 # Create your views here.
 from .models import *
@@ -17,9 +18,15 @@ from .serializers import *
 class showFriends(APIView) :
     def get(self, request, username) :
         user = CustomUser.objects.get(username = username)
-        friends = Friend.objects.filter(user = user)
+        friends = Friend.objects.filter(Q(user = user))
         # frnd_list = {i.frnd for i in friends}
         serializer = FriendsSerializer(friends, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class showMe(APIView) :
+    def get(self, request) :
+        user = self.request.user
+        serializer = UserSerializer(user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserInfo(APIView) :
@@ -56,12 +63,12 @@ class Friend_operations(APIView) :
         # while answering to the friend request
         sender = self.request.user
         response = request.data["response"]
-        try :
-            reciever = CustomUser.objects.get(username = username)
-            old_request = FriendRequest.objects.get(sender = reciever, reciever = sender)
-        except :
-            return Response("friend request not found")
+        reciever = CustomUser.objects.get(username = username)
+        old_request = FriendRequest.objects.get(sender = reciever, reciever = sender)
         old_request.is_accepted = True if response=="yes" else False
+        if response == "yes" :
+            Friend.objects.create(user = sender,frnd = reciever)
+            Friend.objects.create(user = reciever,frnd = sender)
         old_request.save()
         return Response("friend request updated")
 
