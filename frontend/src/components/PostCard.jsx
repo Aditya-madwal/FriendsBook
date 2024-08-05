@@ -17,7 +17,7 @@ function PostCard() {
           />
 
           <div className="mt-2">
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-start gap-3 mt-3">
               <div className="w-10">
                 <img
                   src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -25,12 +25,22 @@ function PostCard() {
                   className="size-10 rounded-full object-cover"
                 />
               </div>
-              <dl>
+              <dl className="w-fit">
                 <div>
                   <dd className="font-medium">@adityamadwal</dd>
                 </div>
                 <div>
                   <dd className="text-sm text-gray-500">12 August, 2024</dd>
+                </div>
+                <div>
+                  <dd className="font-sm text-sm mt-2">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Debitis, reiciendis iste, error praesentium saepe odit,
+                    minus dolorum quibusdam tempora molestias quidem dolor eum
+                    non tenetur? Eveniet quaerat, possimus, unde, deserunt odio
+                    atque obcaecati placeat veniam sequi ratione deleniti
+                    adipisci rem!
+                  </dd>
                 </div>
               </dl>
             </div>
