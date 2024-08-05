@@ -57,8 +57,9 @@ input :focus {
   /* border-right: 1px solid rgb(171, 171, 171); */
 }
 .right-side-bar-home {
-  height: 100vh;
+  /* height: 100vh; */
   position: sticky;
+  right: 0;
   top: 0;
   display: flex;
   flex-direction: column;
@@ -76,4 +77,36 @@ input :focus {
 .slowhover:hover {
   transition: all 0.2s ease;
   -webkit-transition: all 0.2s ease;
+}
+
+/* -===============================================- */
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: modalFadeIn 0.5s ease-out;
+}
+
+.animate-fade-out {
+  animation: modalFadeOut 0.5s ease-out;
 }

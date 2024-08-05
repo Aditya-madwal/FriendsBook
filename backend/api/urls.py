@@ -17,4 +17,6 @@ urlpatterns = [
     path('like', views.Like_operations.as_view(), name="like"),
     path('showfriendrequests', views.ShowAllFriendRequests.as_view(), name="FRs"),
     path('showme', views.showMe.as_view(), name="myinfo"),
+    path('suggestions', views.suggestions.as_view(), name="suggestions"),
+    path('search', views.SearchResults.as_view(), name="search"),
 ]

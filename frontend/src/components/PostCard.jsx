@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 
 import { FaRegCommentDots } from "react-icons/fa";
 
-function PostCard() {
+function PostCard(props) {
+  const [showComments, setShowComments] = useState(false);
   return (
     <>
       <div className="bg-white rounded-lg w-full text-black mb-4">
@@ -12,7 +14,7 @@ function PostCard() {
           className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
           <img
             alt=""
-            src="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+            src={props?.image}
             className="h-full w-full rounded-md object-cover"
           />
 
@@ -20,27 +22,20 @@ function PostCard() {
             <div className="flex items-start gap-3 mt-3">
               <div className="w-10">
                 <img
-                  src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
+                  src={props.user?.pfp}
+                  alt="pfp"
                   className="size-10 rounded-full object-cover"
                 />
               </div>
               <dl className="w-fit">
                 <div>
-                  <dd className="font-medium">@adityamadwal</dd>
+                  <dd className="font-medium">@{props?.user?.username}</dd>
                 </div>
                 <div>
-                  <dd className="text-sm text-gray-500">12 August, 2024</dd>
+                  <dd className="text-sm text-gray-500">{props?.posted_on}</dd>
                 </div>
                 <div>
-                  <dd className="font-sm text-sm mt-2">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Debitis, reiciendis iste, error praesentium saepe odit,
-                    minus dolorum quibusdam tempora molestias quidem dolor eum
-                    non tenetur? Eveniet quaerat, possimus, unde, deserunt odio
-                    atque obcaecati placeat veniam sequi ratione deleniti
-                    adipisci rem!
-                  </dd>
+                  <dd className="font-sm text-sm mt-2">{props?.desc}</dd>
                 </div>
               </dl>
             </div>
@@ -52,11 +47,13 @@ function PostCard() {
                 </span>
 
                 <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">112</p>
+                  <p className="text-gray-500">{props?.likes}</p>
                 </div>
               </button>
 
-              <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
+              <button
+                className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2"
+                onClick={() => setShowComments(!showComments)}>
                 <span className="text-lg">
                   <FaRegCommentDots />
                 </span>
@@ -66,58 +63,41 @@ function PostCard() {
               </button>
             </div>
           </div>
-        </span>
-      </div>
-      <div className="bg-white rounded-lg w-full text-black">
-        <span
-          href="#"
-          className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
-          <img
-            alt=""
-            src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="h-full w-full rounded-md object-cover"
-          />
-
-          <div className="mt-2">
-            <div className="flex items-center gap-3 mt-3">
-              <div className="w-10">
+          {/* comments --------------- */}
+          {showComments ? (
+            <>
+              <span className="flex w-full justify-center mt-4 mb-4">
+                <hr className="w-[80%]" />
+              </span>
+              <div class="flex items-start gap-2.5 mt-3">
                 <img
+                  class="w-8 h-8 rounded-full object-cover"
                   src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
-                  className="size-10 rounded-full object-cover"
+                  alt="Jese image"
                 />
+                <div class="flex flex-col w-full  leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl">
+                  <div class="flex items-center space-x-2 justify-between">
+                    <span class="text-sm font-semibold text-gray-900">
+                      Bonnie Green
+                      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+                        14 Spetember, 2024
+                      </span>
+                    </span>
+                    <button className="text-md flex text-red-600 items-center justify-center hover:bg-red-200 p-1 hover:rounded-lg slowhover">
+                      <MdDeleteForever />
+                      <span className="text-xs">Delete</span>
+                    </button>
+                  </div>
+                  <p class="text-sm font-normal py-2.5 text-gray-900 ">
+                    That's awesome. I think our users will really appreciate the
+                    improvements.
+                  </p>
+                </div>
               </div>
-              <dl>
-                <div>
-                  <dd className="font-medium">@adityamadwal</dd>
-                </div>
-                <div>
-                  <dd className="text-sm text-gray-500">12 August, 2024</dd>
-                </div>
-              </dl>
-            </div>
-
-            <div className="mt-6 flex items-center gap-8 text-xs justify-end">
-              <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                <span className="text-lg">
-                  <FaRegHeart />
-                </span>
-
-                <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">112</p>
-                </div>
-              </button>
-
-              <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                <span className="text-lg">
-                  <FaRegCommentDots />
-                </span>
-                <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">78</p>
-                </div>
-              </button>
-            </div>
-          </div>
+            </>
+          ) : (
+            <></>
+          )}
         </span>
       </div>
     </>

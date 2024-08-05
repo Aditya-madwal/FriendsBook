@@ -21,9 +21,10 @@ class FriendRequestSerializer(serializers.ModelSerializer) :
         fields='__all__'
 
 class PostSerializer(serializers.ModelSerializer) :
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ["user", "uid","title", "desc", "image"]
+        fields = ["user", "uid","title", "desc", "image", "posted_on", "likes", "comments"]
 
 class CommentSerializer(serializers.ModelSerializer) :
     class Meta :

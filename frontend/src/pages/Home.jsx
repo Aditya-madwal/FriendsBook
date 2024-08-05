@@ -6,6 +6,7 @@ import FriendRequests from "../components/FriendRequests";
 import AddPost from "../components/AddPost";
 import SearchBar from "../components/SearchBar";
 import PostCard from "../components/PostCard";
+import Suggestions from "../components/Suggestions";
 
 const Home = () => {
   const [data, setData] = useState(null);
@@ -23,6 +24,7 @@ const Home = () => {
       <div className="right-side-bar-home h-screen">
         <SearchBar />
         <FriendRequests />
+        <Suggestions />
       </div>
     </div>
   );

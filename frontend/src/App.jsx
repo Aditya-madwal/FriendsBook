@@ -12,7 +12,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 import { useContext } from "react";
 import { MyContext } from "./MyContext";
 import api from "./api";
-import FriendRequests from "./pages/FriendRequests";
+import SearchPage from "./pages/SearchPage";
 
 export const Logout = () => {
   localStorage.clear();
@@ -86,11 +86,19 @@ function App() {
             </AuthRequiringRoutes>
           }
         />
-        <Route
+        {/* <Route
           path="/friendrequests"
           element={
             <AuthRequiringRoutes>
               <FriendRequests />
+            </AuthRequiringRoutes>
+          }
+        /> */}
+        <Route
+          path="/search"
+          element={
+            <AuthRequiringRoutes>
+              <SearchPage />
             </AuthRequiringRoutes>
           }
         />

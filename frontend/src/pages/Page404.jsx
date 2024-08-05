@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 const Page404 = () => {
+  const currentUrl = window.location.href;
   return (
     <div>
       <div className="grid h-screen place-content-center bg-white px-4">
@@ -11,10 +14,15 @@ const Page404 = () => {
 
           <p className="mt-4 text-gray-500">We can't find that page.</p>
 
-          <a
-            href="#"
-            className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+          <Link
+            to="/"
+            className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring mr-3">
             Go Back Home
+          </Link>
+          <a
+            href={currentUrl}
+            className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+            Retry
           </a>
         </div>
       </div>

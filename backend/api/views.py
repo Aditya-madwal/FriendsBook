@@ -22,6 +22,12 @@ class showFriends(APIView) :
         # frnd_list = {i.frnd for i in friends}
         serializer = FriendsSerializer(friends, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class suggestions(APIView) :
+    def get(self, request) :
+        user = CustomUser.objects.all()
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class showMe(APIView) :
     def get(self, request) :
@@ -38,8 +44,8 @@ class UserInfo(APIView) :
 
 class ShowAllFriendRequests(APIView) :
     def get(self,request) :
-        sent = FriendRequest.objects.filter(sender = request.user)
-        recieved = FriendRequest.objects.filter(reciever = request.user)
+        sent = FriendRequest.objects.filter(sender = request.user, is_accepted=False)
+        recieved = FriendRequest.objects.filter(reciever = request.user, is_accepted=False)
 
         serializer1 = FriendRequestSerializer(sent, many=True)
         serializer2 = FriendRequestSerializer(recieved, many=True)
@@ -47,6 +53,26 @@ class ShowAllFriendRequests(APIView) :
         data = {
             "sent_requests" : serializer1.data,
             "recieved_requests" : serializer2.data
+        }
+        
+        return Response(data, status=status.HTTP_200_OK)
+
+class SearchResults(APIView) :
+    def post(self,request) :
+        query = request.data['query']
+        print("-=========")
+        print(request.data)
+        print("-=========")
+
+        posts = Post.objects.filter(Q(title__contains=query) | Q(desc__contains=query))
+        people = CustomUser.objects.filter(Q(first_name__contains=query) | Q(last_name__contains=query) | Q(username__contains=query) | Q(bio__contains=query))
+
+        serializer1 = UserSerializer(people, many=True)
+        serializer2 = PostSerializer(posts, many=True)
+
+        data = {
+            "people" : serializer1.data,
+            "posts" : serializer2.data
         }
         
         return Response(data, status=status.HTTP_200_OK)
@@ -66,6 +92,7 @@ class Friend_operations(APIView) :
         reciever = CustomUser.objects.get(username = username)
         old_request = FriendRequest.objects.get(sender = reciever, reciever = sender)
         old_request.is_accepted = True if response=="yes" else False
+        old_request.delete()
         if response == "yes" :
             Friend.objects.create(user = sender,frnd = reciever)
             Friend.objects.create(user = reciever,frnd = sender)

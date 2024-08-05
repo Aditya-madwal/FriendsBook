@@ -13,7 +13,7 @@ function Sidebar() {
     <div className="sidebar bg-white">
       <div className="px-4 py-6">
         <span className="font-extrabold text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg">
-          FriendsBook
+          <Link to={"/"}>FriendsBook</Link>
         </span>
 
         <ul className="mt-6 space-y-1">
