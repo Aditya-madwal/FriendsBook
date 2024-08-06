@@ -41,6 +41,7 @@ const RegisterAndLogout = () => {
 
 function App() {
   const { me, setMe } = useContext(MyContext);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMyData = async () => {

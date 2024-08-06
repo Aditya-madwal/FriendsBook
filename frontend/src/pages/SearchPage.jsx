@@ -18,7 +18,7 @@ function SearchPage() {
   const [category, setCategory] = useState("posts");
   const [query, setQuery] = useState(null);
   let [People, setPeople] = useState([]);
-  let [Posts, setPosts] = useState([23, 311, 231]);
+  let [Posts, setPosts] = useState([]);
   let [response_came, setcame] = useState(false);
   let [loading, setLoading] = useState(false);
 
@@ -61,9 +61,7 @@ function SearchPage() {
     Posts ? setcame(true) : null;
   }, []);
 
-  return loading ? (
-    <div>loading...</div>
-  ) : (
+  return (
     <div className="flex">
       <Sidebar category="posts" />
       <div className="maincontent flex justify-center w-[50vw]">
@@ -79,26 +77,26 @@ function SearchPage() {
                   <Link
                     to={"/search/?category=people&query=" + query}
                     className="shrink-0 rounded-lg bg-sky-100 p-2 text-sm font-medium text-sky-600">
-                    People
+                    People ({People?.length})
                   </Link>
                 ) : (
                   <Link
                     to={"/search/?category=people&query=" + query}
                     className="shrink-0 rounded-lg p-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700">
-                    People
+                    People ({People?.length})
                   </Link>
                 )}
                 {category == "posts" ? (
                   <Link
                     to={"/search/?category=posts&query=" + query}
                     className="shrink-0 rounded-lg bg-sky-100 p-2 text-sm font-medium text-sky-600">
-                    Posts
+                    Posts ({Posts?.length})
                   </Link>
                 ) : (
                   <Link
                     to={"/search/?category=posts&query=" + query}
                     className="shrink-0 rounded-lg p-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700">
-                    Posts
+                    Posts ({Posts?.length})
                   </Link>
                 )}
               </nav>
@@ -108,60 +106,60 @@ function SearchPage() {
             <span className="mt-7 w-full pr-2 pl-2">
               {" "}
               {category == "posts" ? (
-                <div>
+                <div key={query}>
                   {Posts?.map((p) => {
-                    //   <PostCard
-                    //     user={p.user}
-                    //     image={p.image}
-                    //     likes={p.likes}
-                    //     comments={p.comments}
-                    //     title={p.title}
-                    //     desc={p.desc}
-                    //   />;
-                    <span>dbewdbwje</span>;
+                    return (
+                      <PostCard
+                        user={p.user}
+                        image={p.image}
+                        likes={p.likes}
+                        comments={p.comments}
+                        title={p.title}
+                        desc={p.desc}
+                      />
+                    );
                   })}
                   these are posts ( {Posts.length} )
                 </div>
               ) : (
-                <div>
-                  these are people
+                <div key={query}>
                   {People?.map((person) => {
-                    <span className="flex items-start gap-4 bg-gray-100 p-3 rounded-lg mb-4">
-                      <div className=" flex items-center h-full overflow-hidden rounded-full ">
-                        <img
-                          // src={"http://127.0.0.1:8000" + i.sender.pfp}
-                          src="https://images.unsplash.com/photo-1722756090869-8d74046e4989?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
-                          alt="pfp"
-                          className="size-20 rounded object-cover"
-                        />
-                      </div>
+                    return (
+                      <span className="flex items-start gap-4 bg-gray-100 p-3 rounded-lg mb-4">
+                        <div className=" flex items-center h-full overflow-hidden rounded-full ">
+                          <img
+                            // src={"http://127.0.0.1:8000" + i.sender.pfp}
+                            src="https://images.unsplash.com/photo-1722756090869-8d74046e4989?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
+                            alt="pfp"
+                            className="size-20 rounded object-cover"
+                          />
+                        </div>
+                        <div className="w-[80%]">
+                          <h3 className="text-xl text-black font-semibold">
+                            {/* {i.sender.first_name} {i.sender.last_name} */}
+                            aditya madwal
+                          </h3>
 
-                      <span>{person.username}</span>
-                      <div className="w-[80%]">
-                        <h3 className="text-xl text-black font-semibold">
-                          {/* {i.sender.first_name} {i.sender.last_name} */}
-                          aditya madwal
-                        </h3>
-
-                        <dl className="mt-0.5 space-y-px text-md text-gray-600 font-medium">
-                          <div>
-                            {/* <dd className="inline">@{i.sender.username}</dd> */}
-                            <dd className="inline">@wkebdeb</dd>
-                          </div>
-                        </dl>
-                        <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
-                          <div>
-                            {/* <dd className="inline">@{i.sender.username}</dd> */}
-                            <dd className="inline">
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Nihil, cupiditate hic, rerum nisi
-                              consectetur quam voluptates at ducimus omnis odit
-                              sit debitis accusantium.
-                            </dd>
-                          </div>
-                        </dl>
-                      </div>
-                    </span>;
+                          <dl className="mt-0.5 space-y-px text-md text-gray-600 font-medium">
+                            <div>
+                              {/* <dd className="inline">@{i.sender.username}</dd> */}
+                              <dd className="inline">@wkebdeb</dd>
+                            </div>
+                          </dl>
+                          <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
+                            <div>
+                              {/* <dd className="inline">@{i.sender.username}</dd> */}
+                              <dd className="inline">
+                                Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Nihil, cupiditate hic, rerum
+                                nisi consectetur quam voluptates at ducimus
+                                omnis odit sit debitis accusantium.
+                              </dd>
+                            </div>
+                          </dl>
+                        </div>
+                      </span>
+                    );
                   })}
                 </div>
               )}

@@ -58,7 +58,7 @@ input :focus {
 }
 .right-side-bar-home {
   /* height: 100vh; */
-  position: sticky;
+  /* position: sticky; */
   right: 0;
   top: 0;
   display: flex;

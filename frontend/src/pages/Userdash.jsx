@@ -8,6 +8,8 @@ import { IoMdPersonAdd } from "react-icons/io";
 import { useContext } from "react";
 import { MyContext } from "../MyContext";
 
+import PostCard from "../components/PostCard";
+
 function Userdash() {
   const { username } = useParams();
   const { me, setMe } = useContext(MyContext);
@@ -76,20 +78,20 @@ function Userdash() {
     <div className="flex justify-center items-center h-screen">Loading...</div>
   ) : (
     <>
-      {err ? (
+      {user == null ? (
         <Page404 />
       ) : (
-        <div className="flex">
+        <div className="flex bg-gray-100">
           <Sidebar />
           <div className="main-content">
-            <div className="w-[40vh] h-[40vh] overflow-hidden rounded-full bg-gray-200 mb-5">
+            <div className="w-[40vh] h-[40vh] overflow-hidden rounded-full bg-white mb-5">
               <img
                 src={"http://127.0.0.1:8000" + user?.pfp}
                 alt="Long Image"
                 className="w-full h-full circle-img object-cover"
               />
             </div>
-            <div className="btns mb-3">
+            <div className="btns mb-3 ">
               <span className="inline-flex overflow-hidden">
                 {me.username != user.username ? (
                   <>
@@ -141,7 +143,7 @@ function Userdash() {
                 )}
               </span>
             </div>
-            <div className="details-text-container w-[60vw]">
+            <div className="details-text-container w-[60vw] bg-white rounded-lg">
               <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm">
                 <dl className="-my-3 divide-y divide-gray-100 text-sm">
                   <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
@@ -173,17 +175,19 @@ function Userdash() {
                     <dt className="font-medium text-gray-900">Friends</dt>
                     <dd className="text-gray-700 sm:col-span-2">
                       <div className="flex items-center justify-start -space-x-1">
-                        {friends
-                          ? friends.map((i) => (
-                              <div className="h-10 w-10">
-                                <img
-                                  className="h-full w-full rounded-full object-cover object-center ring ring-white"
-                                  src={"http://127.0.0.1:8000" + i.frnd.pfp}
-                                  alt=""
-                                />
-                              </div>
-                            ))
-                          : null}
+                        {friends ? (
+                          friends.map((i) => (
+                            <div className="h-10 w-10">
+                              <img
+                                className="h-full w-full rounded-full object-cover object-center ring ring-white"
+                                src={"http://127.0.0.1:8000" + i.frnd.pfp}
+                                alt=""
+                              />
+                            </div>
+                          ))
+                        ) : (
+                          <div>Loading...</div>
+                        )}
                         <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white text-secondary-400 ring ring-white">
                           <span className="text-base bg-white">
                             +{friends?.length}
@@ -195,6 +199,31 @@ function Userdash() {
                 </dl>
               </div>
             </div>
+            <section className="w-[90%] mt-4 flex flex-col items-center">
+              <span className="text-xl font-bold mb-[20px] mt-[20px]">
+                Previous Posts :
+              </span>
+              <div className="post-container flex h-fit w-fit flex-wrap justify-center">
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+                <div className="w-[40%] m-2">
+                  <PostCard />
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       )}
