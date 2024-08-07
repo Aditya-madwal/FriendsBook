@@ -6,6 +6,7 @@ from django.db.models import Q
 # Create your views here.
 from .models import *
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
@@ -57,13 +58,24 @@ class ShowAllFriendRequests(APIView) :
         
         return Response(data, status=status.HTTP_200_OK)
 
+class ShowPosts(APIView) :
+    def get(self,request,category) :
+        if category == "feed" :
+            posts = Post.objects.all()
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else :
+            try:
+                user = CustomUser.objects.get(username = category)
+            except user.DoesNotExist:
+                raise NotFound(detail="Object not found")
+            posts = Post.objects.filter(user = user)
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
 class SearchResults(APIView) :
     def post(self,request) :
         query = request.data['query']
-        print("-=========")
-        print(request.data)
-        print("-=========")
-
         posts = Post.objects.filter(Q(title__contains=query) | Q(desc__contains=query))
         people = CustomUser.objects.filter(Q(first_name__contains=query) | Q(last_name__contains=query) | Q(username__contains=query) | Q(bio__contains=query))
 

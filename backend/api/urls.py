@@ -19,4 +19,5 @@ urlpatterns = [
     path('showme', views.showMe.as_view(), name="myinfo"),
     path('suggestions', views.suggestions.as_view(), name="suggestions"),
     path('search', views.SearchResults.as_view(), name="search"),
+    path('showposts/<slug:category>', views.ShowPosts.as_view(), name="feed"),
 ]

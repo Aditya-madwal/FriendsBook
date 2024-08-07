@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import React from "react";
 import api from "../api";
+
+import { Masonry } from "masonic";
+
 import Sidebar from "../components/Sidebar";
 import Page404 from "./Page404";
 import { IoMdPersonAdd } from "react-icons/io";
@@ -15,6 +18,7 @@ function Userdash() {
   const { me, setMe } = useContext(MyContext);
 
   const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setError] = useState(null);
   const [friends, setFriends] = useState(null);
@@ -45,6 +49,24 @@ function Userdash() {
 
     fetchUserData();
   }, [username]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await api.get(
+          `http://127.0.0.1:8000/api/showposts/${username}`
+        );
+        setPosts(response.data);
+        console.log(response.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -203,27 +225,27 @@ function Userdash() {
               <span className="text-xl font-bold mb-[20px] mt-[20px]">
                 Previous Posts :
               </span>
-              <div className="post-container flex h-fit w-fit flex-wrap justify-center">
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
-                <div className="w-[40%] m-2">
-                  <PostCard />
-                </div>
+              <div className="post-container flex h-fit w-full flex-wrap justify-center">
+                {posts?.map((p) => {
+                  return (
+                    <div className="w-[40%] m-2">
+                      <PostCard
+                        user={p.user}
+                        image={p.image}
+                        likes={p.likes}
+                        comments={p.comments}
+                        title={p.title}
+                        desc={p.desc}
+                        posted_on={p.posted_on}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </section>
+            {/* experiment */}
+            {/* <Masonry items={items} render={MasonryCard} /> */}
+            {/* experiment- */}
           </div>
         </div>
       )}

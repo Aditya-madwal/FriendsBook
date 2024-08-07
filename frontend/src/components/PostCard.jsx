@@ -12,41 +12,51 @@ function PostCard(props) {
         <span
           href="#"
           className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
-          <img
-            alt=""
-            // src={props?.image}
-            src="https://images.unsplash.com/photo-1722185128411-456d36207767?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="h-full w-full rounded-md object-cover"
-          />
+          {props?.image ? (
+            <img
+              alt=""
+              src={"http://127.0.0.1:8000" + props?.image}
+              className="h-full w-full rounded-md object-cover"
+            />
+          ) : (
+            <></>
+          )}
 
           <div className="mt-2">
             <div className="flex items-start gap-3 mt-3">
               <div className="w-10">
-                <img
-                  // src={props.user?.pfp}
-                  src="https://images.unsplash.com/photo-1722022233014-2c01fea16fa3?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxNXx8fGVufDB8fHx8fA%3D%3D"
-                  alt="pfp"
-                  className="size-10 rounded-full object-cover"
-                />
+                {props.user?.pfp ? (
+                  <img
+                    alt=""
+                    src={"http://127.0.0.1:8000" + props?.user.pfp}
+                    className="size-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <img
+                    alt=""
+                    src={"http://127.0.0.1:8000/images/pfps/default.png"}
+                    className="size-10 rounded-full object-cover"
+                  />
+                )}
               </div>
               <dl className="w-fit">
                 <div>
-                  {/* <dd className="font-medium">@{props?.user?.username}</dd> */}
-                  <dd className="font-medium">@wekdnek</dd>
+                  <dd className="font-medium">@{props.user?.username}</dd>
+                  {/* <dd className="font-medium">@wekdnek</dd> */}
                 </div>
                 <div>
-                  <dd className="text-sm text-gray-500">12 Sep, 2023</dd>
-                  {/* <dd className="text-sm text-gray-500">{props?.posted_on}</dd> */}
+                  {/* <dd className="text-sm text-gray-500">12 Sep, 2023</dd> */}
+                  <dd className="text-sm text-gray-500">{props?.posted_on}</dd>
                 </div>
                 <div>
-                  {/* <dd className="font-sm text-sm mt-2">{props?.desc}</dd> */}
-                  <dd className="font-sm text-sm mt-2">
+                  <dd className="font-sm text-sm mt-2">{props?.desc}</dd>
+                  {/* <dd className="font-sm text-sm mt-2">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Illo, itaque? Veniam autem nulla quam nostrum, facere dolore
                     explicabo, perspiciatis placeat minus officiis voluptate.
                     Pariatur, veniam modi asperiores amet tempore quos neque
                     quidem hic? Illo debitis adipisci, tempore ex sequi ut?
-                  </dd>
+                  </dd> */}
                 </div>
               </dl>
             </div>
@@ -59,7 +69,7 @@ function PostCard(props) {
 
                 <div className="mt-1.5 sm:mt-0">
                   <p className="text-gray-500">{props?.likes}</p>
-                  <p className="text-gray-500">112</p>
+                  {/* <p className="text-gray-500">112</p> */}
                 </div>
               </button>
 
@@ -70,7 +80,7 @@ function PostCard(props) {
                   <FaRegCommentDots />
                 </span>
                 <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">78</p>
+                  <p className="text-gray-500">{props?.comments}</p>
                 </div>
               </button>
             </div>

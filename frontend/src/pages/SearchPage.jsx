@@ -8,7 +8,6 @@ import api from "../api";
 
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
 
 function SearchPage() {
   const location = useLocation();
@@ -34,8 +33,7 @@ function SearchPage() {
           console.log(response.data);
           setPeople(response.data.people);
           setPosts(response.data.posts);
-          console.log(Posts);
-          console.log(People);
+          console.log(Posts[0].user.pfp);
         })
         .catch((error) => {
           console.error(error);
@@ -62,7 +60,7 @@ function SearchPage() {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-100">
       <Sidebar category="posts" />
       <div className="maincontent flex justify-center w-[50vw]">
         <div className="container flex flex-col items-center mt-4">
@@ -116,49 +114,53 @@ function SearchPage() {
                         comments={p.comments}
                         title={p.title}
                         desc={p.desc}
+                        posted_on={p.posted_on}
                       />
                     );
                   })}
-                  these are posts ( {Posts.length} )
                 </div>
               ) : (
                 <div key={query}>
                   {People?.map((person) => {
                     return (
-                      <span className="flex items-start gap-4 bg-gray-100 p-3 rounded-lg mb-4">
-                        <div className=" flex items-center h-full overflow-hidden rounded-full ">
-                          <img
-                            // src={"http://127.0.0.1:8000" + i.sender.pfp}
-                            src="https://images.unsplash.com/photo-1722756090869-8d74046e4989?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
-                            alt="pfp"
-                            className="size-20 rounded object-cover"
-                          />
-                        </div>
-                        <div className="w-[80%]">
-                          <h3 className="text-xl text-black font-semibold">
-                            {/* {i.sender.first_name} {i.sender.last_name} */}
-                            aditya madwal
-                          </h3>
+                      <div className="flex bg-white p-3 rounded-lg mb-4  justify-between items-center">
+                        <span className="flex items-start gap-4 bg-white rounded-lg">
+                          <div className=" flex items-center h-full overflow-hidden rounded-full ">
+                            <img
+                              src={"http://127.0.0.1:8000" + person.pfp}
+                              // src="https://images.unsplash.com/photo-1722756090869-8d74046e4989?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
+                              alt="pfp"
+                              className="size-20 rounded object-cover"
+                            />
+                          </div>
+                          <div className="w-[80%]">
+                            <h3 className="text-xl text-black font-semibold">
+                              {person.first_name} {person.last_name}
+                            </h3>
 
-                          <dl className="mt-0.5 space-y-px text-md text-gray-600 font-medium">
-                            <div>
-                              {/* <dd className="inline">@{i.sender.username}</dd> */}
-                              <dd className="inline">@wkebdeb</dd>
-                            </div>
-                          </dl>
-                          <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
-                            <div>
-                              {/* <dd className="inline">@{i.sender.username}</dd> */}
-                              <dd className="inline">
+                            <dl className="mt-0.5 space-y-px text-md text-gray-600 font-medium">
+                              <div>
+                                <dd className="inline">@{person.username}</dd>
+                                {/* <dd className="inline">@wkebdeb</dd> */}
+                              </div>
+                            </dl>
+                            <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
+                              <div>
+                                <dd className="inline">{person.bio}</dd>
+                                {/* <dd className="inline">
                                 Lorem ipsum dolor sit amet consectetur
                                 adipisicing elit. Nihil, cupiditate hic, rerum
                                 nisi consectetur quam voluptates at ducimus
                                 omnis odit sit debitis accusantium.
-                              </dd>
-                            </div>
-                          </dl>
-                        </div>
-                      </span>
+                              </dd> */}
+                              </div>
+                            </dl>
+                          </div>
+                        </span>
+                        <button className="flex items-center gap-2 slowhover text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg border-0 hover:bg-blue-300 hover:text-blue-700">
+                          View User
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
