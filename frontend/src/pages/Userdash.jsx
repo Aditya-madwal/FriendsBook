@@ -1,104 +1,100 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import React from "react";
 import api from "../api";
-
-import { Masonry } from "masonic";
 
 import Sidebar from "../components/Sidebar";
 import Page404 from "./Page404";
 import { IoMdPersonAdd } from "react-icons/io";
-import { useContext } from "react";
 import { MyContext } from "../MyContext";
 
 import PostCard from "../components/PostCard";
+import Loading from "../components/Loading";
 
 function Userdash() {
   const { username } = useParams();
-  const { me, setMe } = useContext(MyContext);
+  const { me } = useContext(MyContext);
 
   const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [loadingFriends, setLoadingFriends] = useState(true);
   const [err, setError] = useState(null);
-  const [friends, setFriends] = useState(null);
 
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoadingUser(true);
       try {
         const response = await api.get(`/api/showuser/${username}`);
-        console.log(response.data);
         setUser(response.data);
       } catch (error) {
-        if (error.response) {
-          setError(
-            `Error: ${error.response.status} - ${error.response.statusText}`
-          );
-
-          console.log("---------->" + error.response);
-        } else if (error.request) {
-          setError("Error: No response received from server");
-          console.log("-------------->" + err);
-        } else {
-          setError(`Error: ${error.message}`);
-        }
+        handleApiError(error);
       } finally {
-        setLoading(false);
+        setLoadingUser(false);
       }
     };
 
     fetchUserData();
   }, [username]);
 
+  // Fetch user posts
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoadingPosts(true);
       try {
         const response = await api.get(
           `http://127.0.0.1:8000/api/showposts/${username}`
         );
         setPosts(response.data);
-        console.log(response.data);
       } catch (err) {
         setError(err);
       } finally {
-        setLoading(false);
+        setLoadingPosts(false);
       }
     };
 
     fetchPosts();
-  }, []);
+  }, [username]);
 
+  // Fetch friends
   useEffect(() => {
     const fetchFriends = async () => {
-      try {
-        const response = await api.get(`/api/showfriends/${user.username}`);
-        setFriends(response.data);
-        console.log(response.data);
-      } catch (error) {
-        if (error.response) {
-          setError(
-            `Error: ${error.response.status} - ${error.response.statusText}`
-          );
-
-          console.log("error---------->" + error.response);
-        } else if (error.request) {
-          setError("Error: No response received from server");
-          console.log("error -------------->" + err);
-        } else {
-          setError(`Error: ${error.message}`);
+      if (user) {
+        setLoadingFriends(true);
+        try {
+          const response = await api.get(`/api/showfriends/${user.username}`);
+          setFriends(response.data);
+        } catch (error) {
+          handleApiError(error);
+        } finally {
+          setLoadingFriends(false);
         }
-      } finally {
-        setLoading(false);
       }
     };
-    if (me != null) {
-      fetchFriends();
-    }
-  }, [me]);
 
-  return loading ? (
-    <div className="flex justify-center items-center h-screen">Loading...</div>
-  ) : (
+    fetchFriends();
+  }, [user]);
+
+  const handleApiError = (error) => {
+    if (error.response) {
+      setError(
+        `Error: ${error.response.status} - ${error.response.statusText}`
+      );
+    } else if (error.request) {
+      setError("Error: No response received from server");
+    } else {
+      setError(`Error: ${error.message}`);
+    }
+  };
+
+  if (loadingUser || loadingPosts || loadingFriends) {
+    return <Loading />;
+  }
+
+  return (
     <>
       {user == null ? (
         <Page404 />
@@ -115,14 +111,12 @@ function Userdash() {
             </div>
             <div className="btns mb-3 ">
               <span className="inline-flex overflow-hidden">
-                {me.username != user.username ? (
-                  <>
-                    <button
-                      className="flex items-center gap-2 slowhover text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg border-0 hover:bg-blue-700 hover:text-white"
-                      title="Edit Product">
-                      <IoMdPersonAdd /> Add Friend
-                    </button>
-                  </>
+                {me.username !== user.username ? (
+                  <button
+                    className="flex items-center gap-2 slowhover text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg border-0 hover:bg-blue-700 hover:text-white"
+                    title="Add Friend">
+                    <IoMdPersonAdd /> Add Friend
+                  </button>
                 ) : (
                   <>
                     <button
@@ -144,7 +138,7 @@ function Userdash() {
                       Edit
                     </button>
                     <button
-                      className="flex items-center gap-3 slowhover  text-red-600 bg-red-200 p-2 pr-3 pl-3 rounded-lg mr-3 h-fit hover:bg-red-700 hover:text-white"
+                      className="flex items-center gap-3 slowhover text-red-600 bg-red-200 p-2 pr-3 pl-3 rounded-lg mr-3 h-fit hover:bg-red-700 hover:text-white"
                       title="Delete Product">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -196,20 +190,18 @@ function Userdash() {
                   <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
                     <dt className="font-medium text-gray-900">Friends</dt>
                     <dd className="text-gray-700 sm:col-span-2">
-                      <div className="flex items-center justify-start -space-x-1">
-                        {friends ? (
-                          friends.map((i) => (
-                            <div className="h-10 w-10">
-                              <img
-                                className="h-full w-full rounded-full object-cover object-center ring ring-white"
-                                src={"http://127.0.0.1:8000" + i.frnd.pfp}
-                                alt=""
-                              />
-                            </div>
-                          ))
-                        ) : (
-                          <div>Loading...</div>
-                        )}
+                      <div
+                        className="flex items-center justify-start -space-x-1"
+                        key="frnds">
+                        {friends?.map((i) => (
+                          <div className="h-10 w-10" key={i.frnd.id}>
+                            <img
+                              className="h-full w-full rounded-full object-cover object-center ring ring-white"
+                              src={"http://127.0.0.1:8000" + i.frnd.pfp}
+                              alt=""
+                            />
+                          </div>
+                        ))}
                         <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white text-secondary-400 ring ring-white">
                           <span className="text-base bg-white">
                             +{friends?.length}
@@ -228,7 +220,7 @@ function Userdash() {
               <div className="post-container flex h-fit w-full flex-wrap justify-center">
                 {posts?.map((p) => {
                   return (
-                    <div className="w-[40%] m-2">
+                    <div className="w-[40%] m-2" key={p.id}>
                       <PostCard
                         user={p.user}
                         image={p.image}
@@ -243,9 +235,6 @@ function Userdash() {
                 })}
               </div>
             </section>
-            {/* experiment */}
-            {/* <Masonry items={items} render={MasonryCard} /> */}
-            {/* experiment- */}
           </div>
         </div>
       )}
