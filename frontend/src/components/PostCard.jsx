@@ -1,21 +1,102 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-
 import { FaRegCommentDots } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
+import { useContext } from "react";
+import { MyContext } from "../MyContext";
+
+import api from "../api";
 
 function PostCard(props) {
   const [showComments, setShowComments] = useState(false);
+  const [liked, setLiked] = useState(props.is_liked_by_user);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [newCommentAdded, setNew] = useState(false);
+  const { me, setMe } = useContext(MyContext);
+
+  const toggleLike = () => {
+    liked ? setLiked(false) : setLiked(true);
+  };
+
+  // =--------------------------------------------------------------------------
+
+  const AddComment = async (uid, content) => {
+    if (uid != null) {
+      try {
+        // setcmtloading(true);
+        const response = await api
+          .post(`/api/addcomment`, {
+            post: uid,
+            content: content,
+          })
+          .then((res) => console.log(res));
+        console.log(uid + " comment added : " + content);
+      } catch (e) {
+        console.log("comment update -->" + e);
+      } finally {
+        // setcmtloading(false);
+        setComment("");
+        fetchComments(props.uid);
+      }
+    }
+  };
+
+  const DelComment = async (cmt_uid) => {
+    console.log("comment deleted");
+    if (cmt_uid != null) {
+      try {
+        const response = await api
+          .delete(`/api/deletecomment/${cmt_uid}`)
+          .then((res) => console.log(res));
+      } catch (e) {
+        console.log("comment update -->" + e.data);
+      } finally {
+        fetchComments(props.uid);
+      }
+    }
+  };
+
+  // =--------------------------------------------------------------------------
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // let comment_copy = comment;
+    // setComment("");
+    // fetchComments(props.uid);
+    // // setTimeout(fetchComments(props.uid), 3000);
+    // props.addcmt(props.uid, comment_copy);
+    AddComment(props.uid, comment);
+  };
+
+  const fetchComments = async (post_uid) => {
+    try {
+      const response = await api.get(`/api/showcomments/${post_uid}`);
+      setComments(response.data);
+      console.log("comments======>" + response.data);
+      console.log(response.data[1]);
+    } catch (err) {
+      // setError(err);
+      console.log(err);
+    } finally {
+      // setLoading(false);
+      console.log("fetched comments");
+    }
+  };
+
   return (
     <>
-      <div className="bg-white rounded-lg w-full text-black mb-4 m-2">
+      <div className="bg-white rounded-lg w-full text-black mb-4">
         <span
           href="#"
           className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
           {props?.image ? (
             <img
               alt=""
-              src={"http://127.0.0.1:8000" + props?.image}
+              // src={"http://127.0.0.1:8000" + props?.image}
+              src={props?.image}
               className="h-full w-full rounded-md object-cover"
             />
           ) : (
@@ -28,7 +109,8 @@ function PostCard(props) {
                 {props.user?.pfp ? (
                   <img
                     alt=""
-                    src={"http://127.0.0.1:8000" + props?.user.pfp}
+                    // src={"http://127.0.0.1:8000" + props?.user.pfp}
+                    src={props?.user.pfp}
                     className="size-10 rounded-full object-cover"
                   />
                 ) : (
@@ -49,38 +131,62 @@ function PostCard(props) {
                   <dd className="text-sm text-gray-500">{props?.posted_on}</dd>
                 </div>
                 <div>
-                  <dd className="font-sm text-sm mt-2">{props?.desc}</dd>
-                  {/* <dd className="font-sm text-sm mt-2">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Illo, itaque? Veniam autem nulla quam nostrum, facere dolore
-                    explicabo, perspiciatis placeat minus officiis voluptate.
-                    Pariatur, veniam modi asperiores amet tempore quos neque
-                    quidem hic? Illo debitis adipisci, tempore ex sequi ut?
-                  </dd> */}
+                  <dd className="font-sm text-lg mt-2 font-semibold">
+                    {props?.title}
+                  </dd>
+                  <dd className="font-sm text-sm text-gray-800 italic mt-2">
+                    {props?.desc}
+                  </dd>
                 </div>
               </dl>
             </div>
 
             <div className="mt-6 flex items-center gap-8 text-xs justify-end">
-              <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                <span className="text-lg">
-                  <FaRegHeart />
-                </span>
+              {liked ? (
+                <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2 text-red-600">
+                  <button
+                    className="text-lg text-red-600"
+                    onClick={() => {
+                      props.onunlike();
+                      toggleLike();
+                    }}>
+                    <FaHeart />
+                  </button>
 
-                <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">{props?.likes}</p>
-                  {/* <p className="text-gray-500">112</p> */}
-                </div>
-              </button>
+                  <div className="mt-1.5 sm:mt-0">
+                    <p className="text-gray-500">{props?.likes}</p>
+                    {/* <p className="text-gray-500">112</p> */}
+                  </div>
+                </button>
+              ) : (
+                <button className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
+                  <button
+                    className="text-lg"
+                    onClick={() => {
+                      props.onlike();
+                      toggleLike();
+                    }}>
+                    <FaRegHeart />
+                  </button>
+
+                  <div className="mt-1.5 sm:mt-0">
+                    <p className="text-gray-500">{props?.likes}</p>
+                    {/* <p className="text-gray-500">112</p> */}
+                  </div>
+                </button>
+              )}
 
               <button
                 className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2"
-                onClick={() => setShowComments(!showComments)}>
+                onClick={() => {
+                  setShowComments(!showComments);
+                  fetchComments(props.uid);
+                }}>
                 <span className="text-lg">
                   <FaRegCommentDots />
                 </span>
                 <div className="mt-1.5 sm:mt-0">
-                  <p className="text-gray-500">{props?.comments}</p>
+                  <p className="text-gray-500">{props.comments}</p>
                 </div>
               </button>
             </div>
@@ -91,31 +197,74 @@ function PostCard(props) {
               <span className="flex w-full justify-center mt-4 mb-4">
                 <hr className="w-[80%]" />
               </span>
-              <div class="flex items-start gap-2.5 mt-3">
-                <img
-                  class="w-8 h-8 rounded-full object-cover"
-                  src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Jese image"
-                />
-                <div class="flex flex-col w-full  leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl">
-                  <div class="flex items-center space-x-2 justify-between">
-                    <span class="text-sm font-semibold text-gray-900">
-                      Bonnie Green
-                      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
-                        14 Spetember, 2024
-                      </span>
+              {/* Add comment input  */}
+              <div className="addcomment flex justify-center items-center">
+                {/* form for comments ------------------ */}
+                <form
+                  className="relative w-[80%]"
+                  method="post"
+                  onSubmit={handleSubmit}>
+                  <label htmlFor="Search" className="sr-only">
+                    {" "}
+                    Search{" "}
+                  </label>
+
+                  <input
+                    type="text"
+                    id="Search"
+                    value={comment}
+                    onChange={(e) => {
+                      setComment(e.target.value);
+                    }}
+                    placeholder="Add A Comment..."
+                    className="w-full rounded-lg border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm"
+                  />
+
+                  <button
+                    type="submit"
+                    className="absolute inset-y-0 end-0 grid w-10 place-content-center">
+                    <span className="text-gray-600 hover:text-blue-700">
+                      <span className="sr-only">add comment</span>
+                      <IoMdSend />
                     </span>
-                    <button className="text-md flex text-red-600 items-center justify-center hover:bg-red-200 p-1 hover:rounded-lg slowhover">
-                      <MdDeleteForever />
-                      <span className="text-xs">Delete</span>
-                    </button>
-                  </div>
-                  <p class="text-sm font-normal py-2.5 text-gray-900 ">
-                    That's awesome. I think our users will really appreciate the
-                    improvements.
-                  </p>
-                </div>
+                  </button>
+                </form>
+                {/* ----------------- */}
               </div>
+              {comments?.map((c) => {
+                return (
+                  <div class="flex items-start gap-2.5 mt-3" key={c.id}>
+                    <img
+                      class="w-8 h-8 rounded-full object-cover"
+                      // src="https://images.unsplash.com/photo-1721925376073-4d2c53dd12f2?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      src={"http://127.0.0.1:8000" + c.user.pfp}
+                      alt="Jese image"
+                    />
+                    <div class="flex flex-col w-full  leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl">
+                      <div class="flex items-center space-x-2 justify-between">
+                        <span class="text-sm font-semibold text-gray-900">
+                          {c.user.first_name} {c.user.last_name}
+                          <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+                            {c.time}
+                          </span>
+                        </span>
+                        {c.user.username == props.username ||
+                        c.user.username == me.username ? (
+                          <button
+                            className="text-md flex text-red-600 items-center justify-center hover:bg-red-200 p-1 hover:rounded-lg slowhover"
+                            onClick={() => DelComment(c.uid)}>
+                            <MdDeleteForever />
+                            <span className="text-xs">Delete</span>
+                          </button>
+                        ) : null}
+                      </div>
+                      <p class="text-sm font-normal py-2.5 text-gray-900 ">
+                        {c.content}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </>
           ) : (
             <></>

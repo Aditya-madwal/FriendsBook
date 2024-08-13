@@ -13,13 +13,14 @@ import { useContext } from "react";
 import { MyContext } from "./MyContext";
 import api from "./api";
 import SearchPage from "./pages/SearchPage";
+import ChatLanding from "./pages/ChatLanding";
 
-export const Logout = () => {
-  const { me, setMe } = useContext(MyContext);
-  localStorage.clear();
-  setMe(null);
-  return <Navigate to="/login" />;
-};
+// export const Logout = () => {
+//   const { me, setMe } = useContext(MyContext);
+//   localStorage.clear();
+//   setMe(null);
+//   return <Navigate to="/register" />;
+// };
 
 const RegisterAndLogout = () => {
   if (localStorage.getItem(ACCESS_TOKEN) == null) {
@@ -59,20 +60,19 @@ const RegisterAndLogout = () => {
             </p>
           </div>
 
-          <button
-            className="mt-4 text-gray-500"
-            onClick={() => {
-              Logout();
-            }}>
+          <button className="mt-4 text-gray-500">
             Are you sure to logout ?
           </button>
 
           <div className="mt-6 sm:flex sm:gap-4">
-            <Link
+            <button
               className="inline-block w-full rounded-lg bg-red-200 px-5 py-3 text-center text-sm font-semibold text-red-500 sm:w-auto"
-              to="/login">
+              onClick={() => {
+                localStorage.clear();
+                return <Navigate to="/register" />;
+              }}>
               Logout
-            </Link>
+            </button>
 
             <Link
               className="mt-2 inline-block w-full rounded-lg bg-gray-50 px-5 py-3 text-center text-sm font-semibold text-gray-500 sm:mt-0 sm:w-auto"
@@ -134,14 +134,22 @@ function App() {
             </AuthRequiringRoutes>
           }
         />
-        {/* <Route
-          path="/friendrequests"
+        <Route
+          path="/chat/:connection_uid"
           element={
             <AuthRequiringRoutes>
-              <FriendRequests />
+              <ChatLanding />
             </AuthRequiringRoutes>
           }
-        /> */}
+        />
+        <Route
+          path="/chat"
+          element={
+            <AuthRequiringRoutes>
+              <ChatLanding />
+            </AuthRequiringRoutes>
+          }
+        />
         <Route
           path="/search"
           element={

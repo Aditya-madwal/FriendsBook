@@ -21,6 +21,67 @@ function SearchPage() {
   let [response_came, setcame] = useState(false);
   let [loading, setLoading] = useState(false);
 
+  const Likehandle = async (uid) => {
+    if (uid != null) {
+      try {
+        const response = await api
+          .post(`/api/like`, {
+            post_uid: uid,
+          })
+          .then((res) => console.log(res));
+      } catch (e) {
+        console.log("like update -->" + e);
+      }
+    }
+    fetch_search_results(url_query);
+  };
+
+  const UnLikehandle = async (uid) => {
+    if (uid != null) {
+      try {
+        const response = await api
+          .delete(`/api/like/${uid}`)
+          .then((res) => console.log(res));
+      } catch (e) {
+        console.log("like update -->" + e);
+      }
+    }
+    fetch_search_results(url_query);
+  };
+
+  const AddComment = async (uid, content) => {
+    if (uid != null) {
+      try {
+        const response = await api
+          .post(`/api/addcomment`, {
+            post: uid,
+            content: content,
+          })
+          .then((res) => console.log(res));
+        console.log(uid + " comment added : " + content);
+      } catch (e) {
+        console.log("comment update -->" + e);
+      } finally {
+        fetch_search_results(url_query);
+      }
+    }
+  };
+
+  const DelComment = async (cmt_uid) => {
+    console.log("comment deleted");
+    if (uid != null) {
+      try {
+        const response = await api
+          .delete(`/api/deletecomment/${cmt_uid}`)
+          .then((res) => console.log(res));
+      } catch (e) {
+        console.log("comment update -->" + e.data);
+      } finally {
+        fetch_search_results(url_query);
+      }
+    }
+  };
+
   const fetch_search_results = async (query) => {
     setLoading(true);
     let data = {
@@ -33,7 +94,6 @@ function SearchPage() {
           console.log(response.data);
           setPeople(response.data.people);
           setPosts(response.data.posts);
-          console.log(Posts[0].user.pfp);
         })
         .catch((error) => {
           console.error(error);
@@ -107,15 +167,24 @@ function SearchPage() {
                 <div key={query}>
                   {Posts?.map((p) => {
                     return (
-                      <PostCard
-                        user={p.user}
-                        image={p.image}
-                        likes={p.likes}
-                        comments={p.comments}
-                        title={p.title}
-                        desc={p.desc}
-                        posted_on={p.posted_on}
-                      />
+                      <div key={p.id} className="w-full">
+                        <PostCard
+                          user={p.user}
+                          image={p.image}
+                          likes={p.likes}
+                          comments={p.comments}
+                          title={p.title}
+                          desc={p.desc}
+                          posted_on={p.posted_on}
+                          uid={p.uid}
+                          onlike={() => Likehandle(p.uid)}
+                          onunlike={() => UnLikehandle(p.uid)}
+                          is_liked_by_user={p.is_liked_by_user}
+                          key={p.id}
+                          addcmt={AddComment}
+                          delcmt={DelComment}
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -123,43 +192,42 @@ function SearchPage() {
                 <div key={query}>
                   {People?.map((person) => {
                     return (
-                      <div className="flex bg-white p-3 rounded-lg mb-4  justify-between items-center">
-                        <span className="flex items-start gap-4 bg-white rounded-lg">
-                          <div className=" flex items-center h-full overflow-hidden rounded-full ">
-                            <img
-                              src={"http://127.0.0.1:8000" + person.pfp}
-                              // src="https://images.unsplash.com/photo-1722756090869-8d74046e4989?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
-                              alt="pfp"
-                              className="size-20 rounded object-cover"
-                            />
+                      <div className="flex bg-white p-3 rounded-lg mb-4 items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex-shrink-0 rounded-full overflow-hidden w-16 h-16">
+                            {person.pfp ? (
+                              <img
+                                src={"http://127.0.0.1:8000" + person.pfp}
+                                alt="pfp"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <img
+                                src={
+                                  "http://127.0.0.1:8000/images/pfps/default.png"
+                                }
+                                alt="pfp"
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
-                          <div className="w-[80%]">
+                          <div className="flex flex-col">
                             <h3 className="text-xl text-black font-semibold">
                               {person.first_name} {person.last_name}
                             </h3>
-
-                            <dl className="mt-0.5 space-y-px text-md text-gray-600 font-medium">
-                              <div>
-                                <dd className="inline">@{person.username}</dd>
-                                {/* <dd className="inline">@wkebdeb</dd> */}
-                              </div>
+                            <dl className="mt-0.5 text-md text-gray-600 font-medium">
+                              <dd className="inline">@{person.username}</dd>
                             </dl>
-                            <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
-                              <div>
-                                <dd className="inline">{person.bio}</dd>
-                                {/* <dd className="inline">
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Nihil, cupiditate hic, rerum
-                                nisi consectetur quam voluptates at ducimus
-                                omnis odit sit debitis accusantium.
-                              </dd> */}
-                              </div>
+                            <dl className="mt-0.5 text-sm text-gray-600 font-medium">
+                              <dd className="inline">{person.bio}</dd>
                             </dl>
                           </div>
-                        </span>
-                        <button className="flex items-center gap-2 slowhover text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg border-0 hover:bg-blue-300 hover:text-blue-700">
+                        </div>
+                        <Link
+                          className="flex items-center gap-2 text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg border-0 hover:bg-blue-300 hover:text-blue-700"
+                          to={`/user/${person.username}`}>
                           View User
-                        </button>
+                        </Link>
                       </div>
                     );
                   })}

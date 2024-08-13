@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { MyContext } from "../MyContext";
-import { useContext } from "react";
+
 import { BiImageAdd } from "react-icons/bi";
-import { useState, useEffect } from "react";
+import { MdDelete } from "react-icons/md";
+
 import api from "../api";
 
-function AddPost() {
-  const { me, setMe } = useContext(MyContext);
+function AddPost(props) {
+  const { me } = useContext(MyContext);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [title, settitle] = useState(null);
-  const [desc, setdesc] = useState(null);
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Handle file selection and set preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -24,49 +27,51 @@ function AddPost() {
       setPreviewUrl(fileUrl);
     }
   };
-  const handleButtonClick = () => {
+
+  // Trigger the file input click event
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleFileButtonClick = () => {
     document.getElementById("fileInput").click();
   };
 
-  const clearform = () => {
+  // Clear form inputs and state
+  const clearForm = () => {
     setPreviewUrl(null);
     setSelectedFile(null);
-    setdesc(null);
-    settitle(null);
+    setDesc("");
+    setTitle("");
   };
 
-  const handleAddPost = async (e) => {
+  const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("desc", desc);
+    selectedFile ? formData.append("image", selectedFile) : null;
+
     try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("desc", desc);
-      formData.append("image", selectedFile);
-
-      try {
-        const response = await api.post("api/addpost", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } catch (error) {
-        console.error("Error:", error);
-      }
-
-      const res = await api.post("api/addpost", {
-        title,
-        desc,
-        selectedFile,
+      const response = await api.post("api/addpost", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      clearform();
+
+      console.log("Post added successfully:", response.data);
+      clearForm();
     } catch (error) {
-      alert(error);
+      console.error("Error:", error);
+      alert("Failed to add post");
     } finally {
       setLoading(false);
+      props.posts_refresh();
     }
   };
+
   return (
     <div
       role="alert"
@@ -74,8 +79,8 @@ function AddPost() {
       <form
         method="post"
         className="flex items-start gap-4"
-        onSubmit={handleAddPost}>
-        <span className=" w-10 ">
+        onSubmit={handleSubmit}>
+        <span className="w-10">
           <img
             src={"http://127.0.0.1:8000" + me?.pfp}
             alt=""
@@ -85,16 +90,15 @@ function AddPost() {
 
         <div className="flex-1">
           <strong className="block font-medium text-gray-900">
-            What's in your mind ?
+            What's on your mind?
           </strong>
 
           <div>
             <textarea
-              type="text"
               id="desc"
               placeholder="Share Something..."
               value={desc}
-              onChange={(e) => setdesc(e.target.value)}
+              onChange={(e) => setDesc(e.target.value)}
               className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm text-black pl-2"
             />
           </div>
@@ -104,7 +108,7 @@ function AddPost() {
               id="title"
               placeholder="Give it a Title..."
               value={title}
-              onChange={(e) => settitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               className="mt-1 w-full h-10 rounded-md border-gray-200 shadow-sm sm:text-sm text-black pl-2"
             />
           </div>
@@ -122,37 +126,41 @@ function AddPost() {
           <div className="mt-4 flex gap-2">
             <button
               type="submit"
-              className=" p-2 pr-3 pl-3 rounded-lg flex justify-center items-center gap-2 bg-blue-100 text-blue-500 slowhover hover:bg-blue-300 hover:text-blue-700">
-              Add Post
+              className="p-2 pr-3 pl-3 rounded-lg flex justify-center items-center gap-2 bg-blue-100 text-blue-500 slowhover hover:bg-blue-300 hover:text-blue-700">
+              {loading ? "Adding..." : "Add Post"}
             </button>
-            {/* preview + image input -----------------*/}
+
             <input
               type="file"
               id="fileInput"
               accept="image/*"
-              onChange={handleFileChange}
+              onChange={(e) => {
+                handleImageChange(e);
+                handleFileChange(e);
+              }}
               style={{ display: "none" }} // Hide the default file input
             />
             <button
-              onClick={handleButtonClick}
-              className=" text-black  p-2 pr-3 pl-3 rounded-lg w-fit flex justify-center items-center gap-2 hover:bg-gray-200 hover:text-black slowhover">
+              type="button"
+              onClick={handleFileButtonClick}
+              className="text-black p-2 pr-3 pl-3 rounded-lg w-fit flex justify-center items-center gap-2 hover:bg-gray-200 hover:text-black slowhover">
               Add an image
               <span className="text-xl">
                 <BiImageAdd />
               </span>
             </button>
-            {title || desc || previewUrl || previewUrl ? (
+
+            {(title || desc || previewUrl) && (
               <button
-                onClick={() => clearform()}
-                className=" text-red-400  p-2 pr-3 pl-3 rounded-lg w-fit flex justify-center items-center gap-2 hover:bg-red-200 hover:text-red-500 slowhover">
+                type="button"
+                onClick={clearForm}
+                className="text-red-400 p-2 pr-3 pl-3 rounded-lg w-fit flex justify-center items-center gap-2 hover:bg-red-200 hover:text-red-500 slowhover">
                 Clear
-                <span className="text-xl">
-                  <BiImageAdd />
+                <span className="text-lg">
+                  <MdDelete />
                 </span>
               </button>
-            ) : null}
-
-            {/* ----------------- preview */}
+            )}
           </div>
         </div>
       </form>

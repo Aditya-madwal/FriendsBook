@@ -1,4 +1,3 @@
-# for JWT token auth :
 from django.contrib import admin
 from django.urls import path
 from . import views
@@ -20,4 +19,5 @@ urlpatterns = [
     path('suggestions', views.suggestions.as_view(), name="suggestions"),
     path('search', views.SearchResults.as_view(), name="search"),
     path('showposts/<slug:category>', views.ShowPosts.as_view(), name="feed"),
+    path('verifymyemail',views.EmailVerification.as_view(), name="get email otp"),
 ]

@@ -10,29 +10,47 @@ function Suggestions() {
   let [NumSuggestions, setNumSuggestions] = useState(2);
   let [fullscreen, setfullscreen] = useState(false);
 
-  useEffect(() => {
-    const fetchsuggestions = async () => {
-      try {
-        const response = await api.get(`/api/suggestions`);
-        setSuggestions(response.data);
-        setTotalSuggestions(response.data.length);
-      } catch (error) {
-        if (error.response) {
-          setError(
-            `Error: ${error.response.status} - ${error.response.statusText}`
-          );
-          console.log("---------->" + error.response);
-        } else if (error.request) {
-          setError("Error: No response received from server");
-          console.log("-------------->" + err);
-        } else {
-          setError(`Error: ${error.message}`);
-        }
-      } finally {
+  const fetchsuggestions = async () => {
+    try {
+      const response = await api.get(`/api/suggestions`);
+      setSuggestions(response.data);
+      setTotalSuggestions(response.data.length);
+    } catch (error) {
+      if (error.response) {
+        setError(
+          `Error: ${error.response.status} - ${error.response.statusText}`
+        );
+        console.log("---------->" + error.response);
+      } else if (error.request) {
+        setError("Error: No response received from server");
+        console.log("-------------->" + err);
+      } else {
+        setError(`Error: ${error.message}`);
       }
-    };
+    } finally {
+    }
+  };
+
+  useEffect(() => {
     fetchsuggestions();
   }, []);
+
+  const sendRequest = async (username) => {
+    try {
+      const response = await api.get(`/api/friendops/${username}`);
+    } catch (error) {
+      if (error.response) {
+        setError(
+          `Error: ${error.response.status} - ${error.response.statusText}`
+        );
+        console.log("---------->" + error.response);
+      } else {
+        setError(`Error: ${error.message}`);
+      }
+    } finally {
+      fetchsuggestions();
+    }
+  };
 
   return fullscreen ? (
     <div>
@@ -76,92 +94,54 @@ function Suggestions() {
             {/* Modal body */}
             <div className="p-4 md:p-5 space-y-4 overflow-y-auto h-[calc(90vh-8rem)]">
               <ul className="space-y-4">
-                <li className="flex items-center gap-4 bg-gray-100 p-5 rounded-lg mb-[10px]">
-                  <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
-                    <img
-                      //   src={"http://127.0.0.1:8000" + i.sender.pfp}
-                      src="https://images.unsplash.com/photo-1722518805100-f17276502925?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8"
-                      alt="pfp"
-                      className="size-11 rounded object-cover"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="text-md text-black font-semibold">
-                      {/* {i.sender.first_name} {i.sender.last_name} */}
-                      jdnwed doiewhd
-                    </h3>
-
-                    <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
-                      <div>
-                        {/* <dd className="inline">@{i.sender.username}</dd> */}
-                        <dd className="inline">@kdnwekdn</dd>
+                {suggestions?.map((s) => {
+                  return (
+                    <li className="flex items-center gap-4 bg-gray-100 p-5 rounded-lg mb-[10px]">
+                      <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
+                        {s.pfp ? (
+                          <img
+                            src={"http://127.0.0.1:8000" + s.pfp}
+                            className="size-11 rounded object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={
+                              "http://127.0.0.1:8000/images/pfps/default.png"
+                            }
+                            className="size-11 rounded object-cover"
+                          />
+                        )}
                       </div>
-                    </dl>
-                  </div>
 
-                  <div className="flex flex-1 items-center justify-end gap-2">
-                    <button
-                      className="text-blue-500 transition hover:text-blue-600 text-md bg-blue-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center"
-                      onClick={() => {
-                        // respond_request(i.sender.username, "yes");
-                      }}>
-                      Accept
-                      <span className="text-xl">
-                        <IoIosAddCircle />
-                      </span>
-                    </button>
-                    <button className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center">
-                      Delete{" "}
-                      <span className="text-xl">
-                        <MdDeleteForever />
-                      </span>
-                    </button>
-                  </div>
-                </li>
-                <li className="flex items-center gap-4 bg-gray-100 p-5 rounded-lg mb-[10px]">
-                  <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
-                    <img
-                      //   src={"http://127.0.0.1:8000" + i.sender.pfp}
-                      src="https://images.unsplash.com/photo-1722518805100-f17276502925?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8"
-                      alt="pfp"
-                      className="size-11 rounded object-cover"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="text-md text-black font-semibold">
-                      {/* {i.sender.first_name} {i.sender.last_name} */}
-                      jdnwed doiewhd
-                    </h3>
-
-                    <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
                       <div>
-                        {/* <dd className="inline">@{i.sender.username}</dd> */}
-                        <dd className="inline">@kdnwekdn</dd>
-                      </div>
-                    </dl>
-                  </div>
+                        <h3 className="text-md text-black font-semibold">
+                          {s.first_name} {s.last_name}
+                          {/* jdnwed doiewhd */}
+                        </h3>
 
-                  <div className="flex flex-1 items-center justify-end gap-2">
-                    <button
-                      className="text-blue-500 transition hover:text-blue-600 text-md bg-blue-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center"
-                      onClick={() => {
-                        // respond_request(i.sender.username, "yes");
-                      }}>
-                      Accept
-                      <span className="text-xl">
-                        <IoIosAddCircle />
-                      </span>
-                    </button>
-                    <button className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center">
-                      Delete{" "}
-                      <span className="text-xl">
-                        <MdDeleteForever />
-                      </span>
-                    </button>
-                  </div>
-                </li>
+                        <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
+                          <div>
+                            {/* <dd className="inline">@{i.sender.username}</dd> */}
+                            <dd className="inline">@{s.username}</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div className="flex flex-1 items-center justify-end gap-2">
+                        <button
+                          className="text-blue-500 transition hover:text-blue-600 text-md bg-blue-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center"
+                          onClick={() => {
+                            sendRequest(s.username);
+                          }}>
+                          Add Friend
+                          <span className="text-xl">
+                            <IoIosAddCircle />
+                          </span>
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
                 <li className="flex items-center gap-4 bg-gray-100 p-5 rounded-lg mb-[10px]">
                   <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
                     <img
@@ -208,20 +188,6 @@ function Suggestions() {
               </ul>
             </div>
             {/* Modal footer */}
-            <div className="flex items-center justify-end p-4 md:p-5 border-gray-200 rounded-b ">
-              <button
-                data-modal-hide="static-modal"
-                type="button"
-                className="text-blue-500 transition hover:text-blue-600 text-md bg-blue-300 rounded-lg p-2 slowhover pr-3 pl-3 flex items-center gap-2 justify-center mr-3">
-                Accept All
-              </button>
-              <button
-                data-modal-hide="static-modal"
-                type="button"
-                className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-2 slowhover pr-3 pl-3 flex items-center gap-2 justify-center">
-                Decline
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -249,11 +215,21 @@ function Suggestions() {
                     return (
                       <li className="flex items-center gap-4">
                         <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
-                          <img
-                            src={"http://127.0.0.1:8000" + i.pfp}
-                            alt="pfp"
-                            className="size-11 rounded object-cover"
-                          />
+                          {i.pfp ? (
+                            <img
+                              src={"http://127.0.0.1:8000" + i.pfp}
+                              alt="pfp"
+                              className="size-11 rounded object-cover"
+                            />
+                          ) : (
+                            <img
+                              src={
+                                "http://127.0.0.1:8000/images/pfps/default.png"
+                              }
+                              alt="pfp"
+                              className="size-11 rounded object-cover"
+                            />
+                          )}
                         </div>
 
                         <div>
@@ -270,14 +246,11 @@ function Suggestions() {
 
                         <div className="flex flex-1 items-center justify-end gap-2">
                           <button
-                            className="text-blue-500 transition hover:text-blue-600 text-2xl bg-blue-300 rounded-full p-1 slowhover"
+                            className="text-blue-500 transition hover:text-blue-600 text-sm bg-blue-300 rounded-lg p-1 slowhover pr-2 pl-2"
                             onClick={() => {
-                              respond_request(i.username, "yes");
+                              sendRequest(i.username);
                             }}>
-                            {/* <IoIosAddCircle /> */}
-                          </button>
-                          <button className="text-red-500 transition hover:text-red-600 text-2xl bg-red-300 rounded-full p-1">
-                            {/* <MdDeleteForever /> */}
+                            Add Friend
                           </button>
                         </div>
                       </li>
