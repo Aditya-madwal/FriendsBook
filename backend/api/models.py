@@ -7,6 +7,7 @@ from .logic import *
 class Friend(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
     frnd = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="friend")
+    connection_uid = models.CharField(max_length=7, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user}-->{self.frnd}"

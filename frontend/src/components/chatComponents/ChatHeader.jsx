@@ -1,6 +1,6 @@
 import React from "react";
 
-function ChatHeader() {
+function ChatHeader(props) {
   return (
     <div>
       <header className="bg-white">
@@ -8,7 +8,7 @@ function ChatHeader() {
           <a className="block text-teal-600" href="#">
             <img
               class="w-10 h-10 rounded-full object-cover"
-              src="https://images.unsplash.com/photo-1723239406233-88c68024a4d5?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={"http://127.0.0.1:8000" + props.friend?.pfp}
               alt="Bonnie Green image"
             />
           </a>
@@ -17,8 +17,7 @@ function ChatHeader() {
             <nav aria-label="Global" className="hidden md:block">
               <div className="flex items-center gap-2 text-sm">
                 <a className="text-black text-xl font-semibold" href="#">
-                  {" "}
-                  Aditya Madwal{" "}
+                  {props.friend?.username}
                 </a>
               </div>
             </nav>

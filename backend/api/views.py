@@ -18,6 +18,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
 from .serializers import *
 
+from chatapi.models import *
+from chatapi.serializers import ConnectionSerializer
+
 class showFriends(APIView) :
     def get(self, request, username) :
         user = CustomUser.objects.get(username = username)
@@ -129,8 +132,10 @@ class Friend_operations(APIView) :
         old_request.is_accepted = True if response=="yes" else False
         old_request.delete()
         if response == "yes" :
-            Friend.objects.create(user = sender,frnd = reciever)
-            Friend.objects.create(user = reciever,frnd = sender)
+            connection_uid = generate_uuid7()
+            Connection.objects.create(user1 = sender, user2 = reciever, uid = connection_uid)
+            Friend.objects.create(user = sender,frnd = reciever, connection_uid = connection_uid)
+            Friend.objects.create(user = reciever,frnd = sender, connection_uid = connection_uid)
         old_request.save()
         return Response("friend request updated")
     
@@ -145,6 +150,11 @@ class Friend_operations(APIView) :
         if FriendRequest.objects.filter(sender = sender, reciever = reciever).exists() :
             FriendRequest.objects.get(sender = sender, reciever = reciever).delete()
 
+class Fetch_Connection(APIView) :
+    def get(self, request, uid) :
+        connection = Connection.objects.get(uid = uid)
+        serializer = ConnectionSerializer(connection, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class Post_operations(APIView) :
     def post(self, request) :

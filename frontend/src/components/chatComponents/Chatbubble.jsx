@@ -26,7 +26,7 @@ function Chatbubble(props) {
                 <div className="group relative my-2.5">
                   {props.image ? (
                     <img
-                      src="https://images.unsplash.com/photo-1723145886817-1a2ee70a251b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      src={"http://127.0.0.1:8000" + props?.pfp}
                       className="rounded-lg"
                     />
                   ) : null}
@@ -39,7 +39,7 @@ function Chatbubble(props) {
             <div className="flex-shrink-0">
               <img
                 className="w-10 h-10 rounded-full object-cover"
-                src="https://images.unsplash.com/photo-1723239406233-88c68024a4d5?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={"http://127.0.0.1:8000" + props?.pfp}
                 alt="Bonnie Green image"
               />
             </div>
@@ -51,7 +51,7 @@ function Chatbubble(props) {
             <div className="flex-shrink-0">
               <img
                 className="w-10 h-10 rounded-full object-cover"
-                src="https://images.unsplash.com/photo-1723239406233-88c68024a4d5?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={"http://127.0.0.1:8000" + props?.pfp}
                 alt="Bonnie Green image"
               />
             </div>
@@ -71,7 +71,7 @@ function Chatbubble(props) {
                 <div className="group relative my-2.5">
                   {props.image ? (
                     <img
-                      src="https://images.unsplash.com/photo-1723145886817-1a2ee70a251b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      src={"http://127.0.0.1:8000" + props?.pfp}
                       className="rounded-lg"
                     />
                   ) : null}

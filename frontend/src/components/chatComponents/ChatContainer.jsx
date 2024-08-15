@@ -26,7 +26,9 @@ function ChatContainer() {
 
   useEffect(() => {
     fetchmessages();
-  }, []);
+    const chatContainer = document.getElementById("chat-container");
+    // chatContainer.scrollTop = chatContainer.scrollHeight;
+  }, [connection_uid]);
 
   // web socket implementation : ------------------------------------------------------
   const [text, setText] = useState("");
@@ -68,10 +70,8 @@ function ChatContainer() {
   }, [socketUrl]);
 
   useEffect(() => {
-    if (scrollableDivRef.current) {
-      scrollableDivRef.current.scrollTop =
-        scrollableDivRef.current.scrollHeight;
-    }
+    const chatContainer = document.getElementById("chat-container");
+    // chatContainer.scrollTop = chatContainer.scrollHeight;
   }, [messages]);
 
   // --------------------------------------------------------SEnd message---------
@@ -122,6 +122,8 @@ function ChatContainer() {
     setText("");
     setImage(null);
     setPreviewUrl(null);
+    const chatContainer = document.getElementById("chat-container");
+    chatContainer.scrollTop = chatContainer.scrollHeight;
   };
 
   const handleFileChange = (e) => {
@@ -153,11 +155,12 @@ function ChatContainer() {
         <div id="messages" className="flex flex-col space-y-4" key={"messages"}>
           {messages?.map((m) => {
             return (
-              <div>
+              <div id="chat-container">
                 <Chatbubble
                   name={m.sender.username}
                   timestamp={m.sent_on}
                   content={m.content}
+                  pfp={m.sender.pfp}
                 />
               </div>
             );

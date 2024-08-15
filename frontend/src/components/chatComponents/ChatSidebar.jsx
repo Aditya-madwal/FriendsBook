@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { MyContext } from "../../MyContext";
 import api from "../../api";
 
-function ChatSidebar() {
+function ChatSidebar(props) {
   let { connection_uid } = useParams();
 
   const { me } = useContext(MyContext);
@@ -13,10 +13,11 @@ function ChatSidebar() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchFriends = async () => {
-      setLoading(true);
       try {
         const response = await api.get(`/api/showfriends/${me?.username}`);
+        console.log("friends fetched");
         console.log(response.data);
         setFriends(response.data);
       } catch (error) {
@@ -39,15 +40,31 @@ function ChatSidebar() {
 
       {/* Scrollable container for the friends list */}
       <ul className="mt-6 space-y-1 overflow-y-auto px-4">
-        {friends.map((f) => {
+        {friends?.map((f) => {
           return (
-            <li
-              key={f.username}
-              className="block rounded-lg bg-gray-100 px-4 py-2">
-              <button className="text-sm font-medium text-gray-700">
-                {f.username || "Sample Friend"}
-              </button>
-            </li>
+            <>
+              {props.friend?.username == f.frnd.username ? (
+                <li
+                  key={f.frnd.username}
+                  className="block rounded-lg bg-gray-900 px-4 py-2 text-white">
+                  <Link
+                    className="text-sm font-medium text-white"
+                    to={`/chat/${f.connection_uid}`}>
+                    {f.frnd.username || "Sample Friend"}
+                  </Link>
+                </li>
+              ) : (
+                <li
+                  key={f.frnd.username}
+                  className="block rounded-lg bg-gray-100 px-4 py-2">
+                  <Link
+                    className="text-sm font-medium text-gray-700"
+                    to={`/chat/${f.connection_uid}`}>
+                    {f.frnd.username || "Sample Friend"}
+                  </Link>
+                </li>
+              )}
+            </>
           );
         })}
       </ul>

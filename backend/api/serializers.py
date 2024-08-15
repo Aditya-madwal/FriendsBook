@@ -16,7 +16,7 @@ class FriendsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friend
-        fields = ['frnd']
+        fields = ['frnd', 'connection_uid']
 
 class FriendRequestSerializer(serializers.ModelSerializer) :
     sender = UserSerializer(read_only=True)
