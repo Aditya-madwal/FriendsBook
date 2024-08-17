@@ -59,6 +59,15 @@ function PostCard(props) {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   // =--------------------------------------------------------------------------
 
   const handleSubmit = (e) => {
@@ -128,7 +137,9 @@ function PostCard(props) {
                 </div>
                 <div>
                   {/* <dd className="text-sm text-gray-500">12 Sep, 2023</dd> */}
-                  <dd className="text-sm text-gray-500">{props?.posted_on}</dd>
+                  <dd className="text-sm text-gray-500">
+                    {formatDate(props?.posted_on)}
+                  </dd>
                 </div>
                 <div>
                   <dd className="font-sm text-lg mt-2 font-semibold">

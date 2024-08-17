@@ -10,7 +10,7 @@ function Sidebar() {
   const { me, setMe } = useContext(MyContext);
 
   return (
-    <div className="sidebar bg-white">
+    <div className="sidebar bg-white w-[20vw]">
       <div className="px-4 py-6">
         <span className="font-extrabold text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg">
           <Link to={"/"}>FriendsBook</Link>

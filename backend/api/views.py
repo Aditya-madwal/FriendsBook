@@ -112,7 +112,6 @@ class SearchResults(APIView) :
             "posts" : serializer2.data
         }
 
-        
         return Response(data, status=status.HTTP_200_OK)
 
 class Friend_operations(APIView) :
@@ -132,23 +131,29 @@ class Friend_operations(APIView) :
         old_request.is_accepted = True if response=="yes" else False
         old_request.delete()
         if response == "yes" :
+            # accept the request
             connection_uid = generate_uuid7()
             Connection.objects.create(user1 = sender, user2 = reciever, uid = connection_uid)
             Friend.objects.create(user = sender,frnd = reciever, connection_uid = connection_uid)
             Friend.objects.create(user = reciever,frnd = sender, connection_uid = connection_uid)
+            pass
+        else :
+            old_request.delete()
         old_request.save()
         return Response("friend request updated")
     
     def delete(self, request, username) :
-        #delete a friend request
+        #delete a friend
         sender = self.request.user
         reciever = CustomUser.objects.get(username = username)
 
-        if FriendRequest.objects.filter(sender = reciever, reciever = sender).exists() :
-            FriendRequest.objects.get(sender = reciever, reciever = sender).delete()
+        f1 = Friend.objects.get(user = sender, frnd = reciever)
+        Friend.objects.get(user = sender, frnd = reciever).delete()
+        Friend.objects.get(user = reciever, frnd = sender).delete()
 
-        if FriendRequest.objects.filter(sender = sender, reciever = reciever).exists() :
-            FriendRequest.objects.get(sender = sender, reciever = reciever).delete()
+        Connection.objects.get(uid = f1.connection_uid).delete()
+
+        return Response("friend connection deleted")
 
 class Fetch_Connection(APIView) :
     def get(self, request, uid) :

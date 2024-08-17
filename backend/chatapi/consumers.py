@@ -44,21 +44,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         image_data = base64.b64encode(bytes_data).decode('utf-8') if bytes_data else None
         text = data.get('content')
         sender_username = data.get('username')
-        serialized_msg_object = await self.save_message(text=text, image_data=image_data, sender_username=sender_username)
+        # serialized_msg_object = await self.save_message(text=text, image_data=image_data, sender_username=sender_username)
 
-        if text_data:
-            data = json.loads(text_data)
-            text = data.get('content')
-            sender_username = data.get('username')
-            image_data = data.get('image')
+        # if text_data:
+        #     data = json.loads(text_data)
+        #     text = data.get('content')
+        #     sender_username = data.get('username')
+        #     image_data = data.get('image')
 
-            if image_data:
-                # Handle base64 image data
-                format, imgstr = image_data.split(';base64,') 
-                ext = format.split('/')[-1]
-                image_file = ContentFile(base64.b64decode(imgstr), name=f'image.{ext}')
-            else :
-                image_file = None
+        #     if image_data:
+        #         # Handle base64 image data
+        #         format, imgstr = image_data.split(';base64,') 
+        #         ext = format.split('/')[-1]
+        #         image_file = ContentFile(base64.b64decode(imgstr), name=f'image.{ext}')
+        #     else :
+        #         image_file = None
+        image_file = None
         
         serialized_msg_object = await self.save_message(text=text, image_data=image_file, sender_username=sender_username)
         

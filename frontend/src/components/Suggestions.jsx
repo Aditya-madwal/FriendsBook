@@ -142,49 +142,6 @@ function Suggestions() {
                     </li>
                   );
                 })}
-                <li className="flex items-center gap-4 bg-gray-100 p-5 rounded-lg mb-[10px]">
-                  <div className=" flex items-center h-full overflow-hidden rounded-full bg-gray-200">
-                    <img
-                      //   src={"http://127.0.0.1:8000" + i.sender.pfp}
-                      src="https://images.unsplash.com/photo-1722518805100-f17276502925?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8"
-                      alt="pfp"
-                      className="size-11 rounded object-cover"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="text-md text-black font-semibold">
-                      {/* {i.sender.first_name} {i.sender.last_name} */}
-                      jdnwed doiewhd
-                    </h3>
-
-                    <dl className="mt-0.5 space-y-px text-sm text-gray-600 font-medium">
-                      <div>
-                        {/* <dd className="inline">@{i.sender.username}</dd> */}
-                        <dd className="inline">@kdnwekdn</dd>
-                      </div>
-                    </dl>
-                  </div>
-
-                  <div className="flex flex-1 items-center justify-end gap-2">
-                    <button
-                      className="text-blue-500 transition hover:text-blue-600 text-md bg-blue-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center"
-                      onClick={() => {
-                        // respond_request(i.sender.username, "yes");
-                      }}>
-                      Accept
-                      <span className="text-xl">
-                        <IoIosAddCircle />
-                      </span>
-                    </button>
-                    <button className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center">
-                      Delete{" "}
-                      <span className="text-xl">
-                        <MdDeleteForever />
-                      </span>
-                    </button>
-                  </div>
-                </li>
               </ul>
             </div>
             {/* Modal footer */}

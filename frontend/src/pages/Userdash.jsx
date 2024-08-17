@@ -39,6 +39,14 @@ function Userdash() {
   const [cmtsloading, setcmtloading] = useState(false);
 
   useEffect(() => {
+    if (me?.username == username) {
+      setVerificationAlert(me?.verified);
+    } else {
+      setVerificationAlert(true);
+    }
+  });
+
+  useEffect(() => {
     const fetchUserData = async () => {
       setLoadingUser(true);
       try {
@@ -74,24 +82,36 @@ function Userdash() {
   }, [username]);
 
   // Fetch friends
-  useEffect(() => {
-    const fetchFriends = async () => {
-      if (user) {
-        setLoadingFriends(true);
-        try {
-          const response = await api.get(`/api/showfriends/${user.username}`);
-          console.log(response.data);
-          setFriends(response.data);
-        } catch (error) {
-          handleApiError(error);
-        } finally {
-          setLoadingFriends(false);
-        }
+  const fetchFriends = async () => {
+    if (user) {
+      setLoadingFriends(true);
+      try {
+        const response = await api.get(`/api/showfriends/${user.username}`);
+        console.log(response.data);
+        setFriends(response.data);
+      } catch (error) {
+        handleApiError(error);
+      } finally {
+        setLoadingFriends(false);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchFriends();
   }, [user]);
+
+  const deleteFriend = async (username) => {
+    setLoadingUser(true);
+    try {
+      const response = await api.delete(`/api/friendops/${username}`);
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      setLoadingUser(false);
+    }
+    fetchFriends();
+  };
 
   const sendOTPrequest = async () => {
     try {
@@ -280,13 +300,18 @@ function Userdash() {
                               </div>
 
                               <div className="flex flex-1 items-center justify-end gap-2">
-                                <button
+                                <Link
                                   className="text-green-500 transition hover:text-green-600 text-md bg-green-300 rounded-lg p-2 slowhover pr-2 pl-2 flex items-center justify-center"
-                                  onClick={() => {}}>
+                                  to={`/chat/${f.connection_uid}`}>
+                                  {" "}
                                   Message
                                   <span className="text-xl"></span>
-                                </button>
-                                <button className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-2 slowhover pr-2 pl-2 flex items-center justify-center">
+                                </Link>
+                                <button
+                                  className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-2 slowhover pr-2 pl-2 flex items-center justify-center"
+                                  onClick={() => {
+                                    deleteFriend(f.frnd.username);
+                                  }}>
                                   UnFriend
                                 </button>
                               </div>
@@ -483,11 +508,7 @@ function Userdash() {
                             {friends.slice(0, fraction_of_friends)?.map((i) => (
                               <div className="h-10 w-10" key={i.frnd.id}>
                                 {i.frnd.pfp ? (
-                                  <Link
-                                    to={
-                                      "http://127.0.0.1:8000/api/showuser/" +
-                                      i.frnd.username
-                                    }>
+                                  <Link to={"/user/" + i.frnd.username}>
                                     <img
                                       className="h-full w-full rounded-full object-cover object-center ring ring-white"
                                       src={"http://127.0.0.1:8000" + i.frnd.pfp}

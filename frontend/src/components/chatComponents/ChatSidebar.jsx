@@ -31,22 +31,27 @@ function ChatSidebar(props) {
   }, [me, connection_uid]); // Adding me.username as a dependency
 
   return (
-    <div className="sidebar bg-white h-screen flex flex-col">
-      <div className="px-4 pt-6">
+    <div className="sidebar bg-white h-screen flex flex-col w-full">
+      <div className="px-4 pt-6 mb-4">
         <span className="font-extrabold text-blue-600 bg-blue-200 p-2 pr-3 pl-3 rounded-lg">
           <Link to={"/chat"}>FriendsBook : Chat</Link>
         </span>
       </div>
 
       {/* Scrollable container for the friends list */}
-      <ul className="mt-6 space-y-1 overflow-y-auto px-4">
+      <ul className="mt-4 space-y-1 overflow-y-auto px-4 flex-1">
         {friends?.map((f) => {
           return (
             <>
               {props.friend?.username == f.frnd.username ? (
                 <li
                   key={f.frnd.username}
-                  className="block rounded-lg bg-gray-900 px-4 py-2 text-white">
+                  className="flex rounded-lg bg-gray-900 px-4 py-2 text-white justify-start items-center gap-2">
+                  <img
+                    src={"http://127.0.0.1:8000" + f.frnd.pfp}
+                    alt="pfp"
+                    className="h-[30px] w-[30px] rounded-full object-cover"
+                  />
                   <Link
                     className="text-sm font-medium text-white"
                     to={`/chat/${f.connection_uid}`}>
@@ -56,7 +61,12 @@ function ChatSidebar(props) {
               ) : (
                 <li
                   key={f.frnd.username}
-                  className="block rounded-lg bg-gray-100 px-4 py-2">
+                  className="rounded-lg bg-gray-100 px-4 py-2 flex justify-start items-center gap-2">
+                  <img
+                    src={"http://127.0.0.1:8000" + f.frnd.pfp}
+                    alt="pfp"
+                    className="h-[30px] w-[30px] rounded-full object-cover"
+                  />
                   <Link
                     className="text-sm font-medium text-gray-700"
                     to={`/chat/${f.connection_uid}`}>
@@ -69,7 +79,7 @@ function ChatSidebar(props) {
         })}
       </ul>
 
-      <div className="sticky bottom-0 border-t border-gray-100">
+      <div className="sticky bottom-0 border-gray-100">
         <button className="flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-100 hover:text-white-700 m-2">
           <Link to="/" className="flex gap-3 items-center w-full">
             <CiLogout />

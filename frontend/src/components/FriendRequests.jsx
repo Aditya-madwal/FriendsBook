@@ -56,23 +56,6 @@ function FriendRequests() {
     }
   };
 
-  const delete_request = async (username) => {
-    try {
-      await api
-        .delete(`/api/friendops/${username}`)
-        .then((response) => {
-          console.log(username);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch (e) {
-      alert("error");
-    } finally {
-      fetchFRs();
-    }
-  };
-
   useEffect(() => {
     fetchFRs();
   }, []);
@@ -164,7 +147,7 @@ function FriendRequests() {
                         <button
                           className="text-red-500 transition hover:text-red-600 text-md bg-red-300 rounded-lg p-1 slowhover pr-2 pl-2 flex items-center gap-2 justify-center"
                           onClick={() => {
-                            delete_request(f.sender.username);
+                            respond_request(i.sender.username, "no");
                           }}>
                           Delete{" "}
                           <span className="text-xl">
@@ -242,7 +225,7 @@ function FriendRequests() {
                         <button
                           className="text-red-500 transition hover:text-red-600 text-2xl bg-red-300 rounded-full p-1"
                           onClick={() => {
-                            delete_request(i.sender.username);
+                            respond_request(i.sender.username, "no");
                           }}>
                           <MdDeleteForever />
                         </button>

@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function ChatHeader(props) {
   return (
     <div>
       <header className="bg-white">
-        <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-3 px-4 sm:px-6 lg:px-8">
           <a className="block text-teal-600" href="#">
             <img
               class="w-10 h-10 rounded-full object-cover"
@@ -24,11 +25,11 @@ function ChatHeader(props) {
 
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
-                <a
+                <Link
                   className="block rounded-md bg-blue-200 px-5 py-2.5 text-sm font-medium text-blue-400 transition hover:bg-blue-400 hover:text-blue-700"
-                  href="#">
+                  to={`/user/${props.friend?.username}`}>
                   View User
-                </a>
+                </Link>
               </div>
             </div>
           </div>
