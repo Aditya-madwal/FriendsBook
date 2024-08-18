@@ -122,6 +122,10 @@
 ![Login page](/screenshots/login.png)
 ![Register page](/screenshots/register.png)
 
+### User Dashboard
+
+![user dash](/screenshots/userdash.png)
+
 ### Search
 
 ![Search Page](/screenshots/search.png)
