@@ -1,6 +1,6 @@
 # FriendsBook
 
-**FriendsBook** is a full-stack social media application built using Django Rest Framework for the backend and React.js for the frontend. The app provides a platform where users can connect with friends, share posts, engage in conversations, and interact with content through likes and comments.
+**FriendsBook** is a full-stack social media application built using Django Rest Framework for the backend and React.js (+TailwindCSS) for the frontend. The app provides a platform where users can connect with friends, share posts, engage in conversations, and interact with content through likes and comments.
 
 ## Features
 
@@ -46,27 +46,20 @@
 - **Tailwind CSS**: For styling the application.
 - **Axios**: For making HTTP requests to the backend.
 
-### Deployment
-
-- **Docker**: For containerizing the application.
-- **NGINX**: As a reverse proxy server.
-- **Gunicorn**: For serving the Django application.
-
 ## Installation
 
 ### Prerequisites
 
 - Python 3.x
-- Node.js
 - PostgreSQL
-- Docker (optional for containerization)
+- React js 18.x
 
 ### Backend Setup
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/friendsbook.git
+   git clone https://github.com/aditya-madwal/friendsbook.git
    cd friendsbook/backend
    ```
 
@@ -109,13 +102,6 @@
    npm start
    ```
 
-### Running with Docker
-
-1. **Build and run the Docker containers:**
-   ```bash
-   docker-compose up --build
-   ```
-
 ## Usage
 
 - **User Registration:** Sign up with a new account.
@@ -123,38 +109,30 @@
 - **Posts:** Create, view, and interact with posts.
 - **Friends:** Send friend requests and manage your friend list.
 - **Chat:** Engage in real-time chat with your friends.
+- **Search:** Search People and Posts across FriendsBook using search feature.
 
 ## Screenshots
 
 ### Home Feed
 
-![Home Feed](path-to-screenshot-home.png)
+![Home Feed](![alt text](/screenshots/home.png))
 
-### Friend Requests
+### Login and Register
 
-![Friend Requests](path-to-screenshot-friend-requests.png)
+![Login page](![alt text](/screenshots/login.png))
+![Register page](![alt text](/screenshots/register.png))
+
+### Search
+
+![Search Page](/screenshots/search.png)
 
 ### Chat Interface
 
-![Chat Interface](path-to-screenshot-chat-interface.png)
+![Chat Interface](/screenshots/chat.png)
 
 ### Post Interaction
 
-![Post Interaction](path-to-screenshot-post-interaction.png)
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a Pull Request.
-
-## License
-
-This project is licensed under the MIT License.
+![Post Interaction](/screenshots/likeAndComment.png)
 
 ## Acknowledgments
 
