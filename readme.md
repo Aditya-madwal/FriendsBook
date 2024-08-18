@@ -115,12 +115,12 @@
 
 ### Home Feed
 
-![Home Feed](![alt text](/screenshots/home.png))
+![Home Feed](/screenshots/home.png)
 
 ### Login and Register
 
-![Login page](![alt text](/screenshots/login.png))
-![Register page](![alt text](/screenshots/register.png))
+![Login page](/screenshots/login.png)
+![Register page](/screenshots/register.png)
 
 ### Search
 
