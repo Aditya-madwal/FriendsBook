@@ -6,6 +6,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 import { useContext } from "react";
 import { MyContext } from "../MyContext";
+import { IoMdClose } from "react-icons/io";
 
 import api from "../api";
 
@@ -16,10 +17,14 @@ function PostCard(props) {
   const [comments, setComments] = useState([]);
   const [newCommentAdded, setNew] = useState(false);
   const { me, setMe } = useContext(MyContext);
+  const [imageFull, setImageFull] = useState(false);
 
   const toggleLike = () => {
     liked ? setLiked(false) : setLiked(true);
+    playPopSound();
   };
+
+  const { playPopSound } = useContext(MyContext);
 
   // =--------------------------------------------------------------------------
 
@@ -33,6 +38,7 @@ function PostCard(props) {
             content: content,
           })
           .then((res) => console.log(res));
+        playPopSound();
         console.log(uid + " comment added : " + content);
       } catch (e) {
         console.log("comment update -->" + e);
@@ -51,6 +57,7 @@ function PostCard(props) {
         const response = await api
           .delete(`/api/deletecomment/${cmt_uid}`)
           .then((res) => console.log(res));
+        playPopSound();
       } catch (e) {
         console.log("comment update -->" + e.data);
       } finally {
@@ -97,17 +104,46 @@ function PostCard(props) {
 
   return (
     <>
+      {imageFull ? (
+        <div>
+          <div className="fixed inset-0 bg-opacity-50 z-50 flex justify-center items-center  backdrop-blur-[5px]">
+            <span className="flex items-start w-[90vw] justify-between">
+              <div className="flex w-full justify-center">
+                <div
+                  role="status"
+                  className="p-2 bg-white border rounded-lg shadow-lg ">
+                  <img
+                    src={props?.image}
+                    alt="post image"
+                    className="h-[90vh] rounded-lg"
+                  />
+                </div>
+              </div>
+              <button
+                className="bg-black text-white p-2 rounded-full"
+                onClick={() => setImageFull(false)}>
+                <IoMdClose />
+              </button>
+            </span>
+          </div>
+        </div>
+      ) : null}
       <div className="bg-white rounded-lg w-full text-black mb-4">
         <span
           href="#"
           className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
           {props?.image ? (
-            <img
-              alt=""
-              // src={"http://127.0.0.1:8000" + props?.image}
-              src={props?.image}
-              className="h-full w-full rounded-md object-cover"
-            />
+            <button
+              onClick={() => {
+                setImageFull(true);
+              }}>
+              <img
+                alt=""
+                // src={"http://127.0.0.1:8000" + props?.image}
+                src={props?.image}
+                className="h-full w-full rounded-md object-cover"
+              />
+            </button>
           ) : (
             <></>
           )}

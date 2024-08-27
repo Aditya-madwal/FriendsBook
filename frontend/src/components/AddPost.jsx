@@ -8,6 +8,7 @@ import api from "../api";
 
 function AddPost(props) {
   const { me } = useContext(MyContext);
+  const { playPopSound } = useContext(MyContext);
   const [selectedFile, setSelectedFile] = useState(null);
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
@@ -69,6 +70,7 @@ function AddPost(props) {
     } finally {
       setLoading(false);
       props.posts_refresh();
+      playPopSound();
     }
   };
 

@@ -28,38 +28,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data=None, bytes_data = None):
-        print("++++++++++++++++++")
-        print(text_data)
-        print(bytes_data)
-        print("++++++++++++++++++")
 
-        # data = json.loads(text_data)
-
-        # text = data.get('content')
-        # # image_data = data.get('image')
-
-        # serialized_msg_object = await self.save_message(text = text, image_data=None, sender_username=sender_username)
         data = json.loads(text_data)
         sender_username = data.get('username')
-        image_data = base64.b64encode(bytes_data).decode('utf-8') if bytes_data else None
+        image_data = data.get('image')
         text = data.get('content')
         sender_username = data.get('username')
-        # serialized_msg_object = await self.save_message(text=text, image_data=image_data, sender_username=sender_username)
-
-        # if text_data:
-        #     data = json.loads(text_data)
-        #     text = data.get('content')
-        #     sender_username = data.get('username')
-        #     image_data = data.get('image')
-
-        #     if image_data:
-        #         # Handle base64 image data
-        #         format, imgstr = image_data.split(';base64,') 
-        #         ext = format.split('/')[-1]
-        #         image_file = ContentFile(base64.b64decode(imgstr), name=f'image.{ext}')
-        #     else :
-        #         image_file = None
         image_file = None
+
+        if image_data:
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            image_file = ContentFile(base64.b64decode(imgstr), name=f'{sender_username}_{self.channel_name}.{ext}')
+            print(image_file)
+        else:
+            image_file = None
         
         serialized_msg_object = await self.save_message(text=text, image_data=image_file, sender_username=sender_username)
         
@@ -69,10 +52,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': {
-                    # 'sender': sender,
-                    # 'text': message_text,
-                    # 'image_url': message.image.url if message.image else None,
-                    # 'timestamp': message.timestamp.isoformat(),
                     'message_data' : serialized_msg_object,
                 }
             }
@@ -100,11 +79,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             image = None if not image_data else image_data
         )
 
-        if image_data:
-            # Decode and save the image
-            format, imgstr = image_data.split(';base64,') 
-            ext = format.split('/')[-1] 
-            message.image.save(f'image_{message.id}.{ext}', ContentFile(base64.b64decode(imgstr)), save=True)
 
         message.save()
 

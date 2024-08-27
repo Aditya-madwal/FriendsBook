@@ -13,6 +13,10 @@ function ChatContainer() {
 
   let [messages, setMessages] = useState([]);
   let [msgCount, setMsgCount] = useState(0);
+  let [sendLoading, setSendLoading] = useState(false);
+
+  // const [playPopSound] = useSound(popSound);
+  const { playPopSound } = useContext(MyContext);
 
   const fetchmessages = async () => {
     try {
@@ -50,6 +54,7 @@ function ChatContainer() {
       const message = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, message.message_data]);
       setMsgCount((prevCount) => prevCount + 1);
+      playPopSound();
     };
 
     socketRef.current.onerror = (error) => {
@@ -62,6 +67,11 @@ function ChatContainer() {
 
     return () => socketRef.current.close();
   }, [socketUrl]);
+
+  // const playSound = () => {
+  //   const sound = new Audio("../../../assets/popSound.mp3");
+  //   sound.play().catch((error) => console.error("Error playing sound:", error));
+  // };
 
   useEffect(() => {
     // Scroll to bottom whenever the messages array changes
@@ -79,6 +89,7 @@ function ChatContainer() {
         };
         socketRef.current.send(JSON.stringify(message));
       } else if (text && image) {
+        // taxt and image both included in the message
         const message_obj = {
           content: text,
           image: null,
@@ -88,14 +99,15 @@ function ChatContainer() {
         if (image) {
           const reader = new FileReader();
           reader.onloadend = () => {
-            const base64File = reader.result.split(",")[1];
-            message_obj.image = base64File;
+            const base64Image = reader.result;
+            message_obj.image = base64Image;
             socketRef.current.send(JSON.stringify(message_obj));
           };
-          reader.readAsDataURL(image);
+          reader.readAsDataURL(image); // Convert image to Base64 string
         }
       } else {
         console.warn("Cannot send an empty message");
+        alert("Text cannot be empty.");
       }
     } else {
       console.warn("WebSocket is not open. Message not sent.");
@@ -105,10 +117,9 @@ function ChatContainer() {
     setPreviewUrl(null);
 
     // Scroll to bottom after sending a message
-    const chatContainer = document.getElementById("chat-container");
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+    const e2 = document.getElementById("chats");
+    e2.scroll({ top: e2.scrollHeight, behavior: "smooth" });
+    playPopSound();
   };
 
   const handleFileChange = (e) => {
@@ -130,6 +141,9 @@ function ChatContainer() {
 
   return (
     <>
+      {/* <button className="btn" onClick={playPopSound}>
+        Play sound
+      </button> */}
       <div
         className="flex-1 overflow-y-auto p-5 bg-gray-300 rounded-lg rounded-r-none bg-[url('https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Background.width-1200.format-webp.webp')] bg-no-repeat bg-cover bg-opacity-3"
         id="chats">
@@ -144,11 +158,12 @@ function ChatContainer() {
               timestamp={m.sent_on}
               content={m.content}
               pfp={m.sender.pfp}
+              image={m.image}
             />
           ))}
         </div>
       </div>
-      <div className="p-4 bg-white border-t border-gray-200  bottom-0  flex flex-col">
+      <div className="p-4 bg-white  bottom-0  flex flex-col">
         {/* Image Preview */}
         {previewUrl && (
           <div className="mb-4">
